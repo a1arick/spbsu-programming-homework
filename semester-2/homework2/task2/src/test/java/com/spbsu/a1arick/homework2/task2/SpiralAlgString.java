@@ -8,7 +8,7 @@ public class SpiralAlgString extends AbstractSpiralAlg {
 
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-    public String getOutput(){
+    public String getOutput() {
         return byteArrayOutputStream.toString();
     }
 

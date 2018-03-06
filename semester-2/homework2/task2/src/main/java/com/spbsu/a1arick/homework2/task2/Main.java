@@ -17,7 +17,7 @@ public class Main {
         Scanner console = new Scanner(System.in);
         String line = console.nextLine();
         Выводилка выводилка;
-        if(line.equals("console")){
+        if (line.equals("console")) {
             выводилка = new SpiralAlgConsole();
         } else {
             выводилка = new SpiralAlgFile();
