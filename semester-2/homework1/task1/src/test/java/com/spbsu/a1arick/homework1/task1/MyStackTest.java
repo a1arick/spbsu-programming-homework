@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class MyStackTest {
     @Test
-    public void stack() {
+    public void testPush() {
         MyStack stack = new MyStack();
         int n = 10;
         for (int i = 0; i < n; i++)
@@ -14,11 +14,23 @@ public class MyStackTest {
 
         assertFalse(stack.isEmpty());
         assertEquals(n,stack.size());
+    }
 
+    @Test
+    public void testIsEmpty() {
+        MyStack stack = new MyStack();
+        assertTrue(stack.isEmpty());
+        stack.push(5);
+        assertFalse(stack.isEmpty());
+    }
+
+    @Test
+    public void testPop() {
+        MyStack stack = new MyStack();
+        int n = 10;
+        for (int i = 0; i < n; i++)
+            stack.push(i);
         for (int i = 0; i < n; i++)
             assertEquals(n - i - 1, stack.pop());
-
-        assertTrue(stack.isEmpty());
-        assertEquals(0, stack.size());
     }
 }
