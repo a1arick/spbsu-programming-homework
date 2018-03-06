@@ -1,11 +1,11 @@
 package com.spbsu.a1arick.homework.task2;
 
 public class MyList {
-    private class Node{
-        int value;
+    private class Node {
+        private int value;
         Node next;
 
-        Node (int value, Node next){
+        Node (int value, Node next) {
             this.value = value;
             this.next = next;
         }
@@ -13,8 +13,6 @@ public class MyList {
 
     private int size = 0;
     private Node head = null;
-
-    MyList() { }
 
     public void add(int x){
         Node node = new Node (x, null);
@@ -31,21 +29,21 @@ public class MyList {
         size++;
     }
 
-    public int remove (int i){
-        if (i < 0 || i >= size){
+    public int remove (int i) {
+        if (i < 0 || i >= size) {
             return Integer.MIN_VALUE;
         }
 
         Node cur = head;
         Node prev = head;
 
-        if (i == 0){
+        if (i == 0) {
             int n = head.value;
             head = head.next;
             return n;
         }
 
-        while (i > 0){
+        while (i > 0) {
             prev = cur;
             cur = cur.next;
             i--;
@@ -56,14 +54,14 @@ public class MyList {
         return n;
     }
 
-    public int get (int i){
-        if (i < 0 || i >= size){
+    public int get (int i) {
+        if (i < 0 || i >= size) {
             return Integer.MIN_VALUE;
         }
 
         Node x = head;
 
-        while (i > 0){
+        while (i > 0) {
             x = x.next;
             i--;
         }
