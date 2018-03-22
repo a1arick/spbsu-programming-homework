@@ -1,7 +1,6 @@
 package com.spbsu.a1arick.homework4.task2;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
 
@@ -20,42 +19,70 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean contains(Object o) {
+        if (o == null || !(o instanceof Comparable)) return false;
+        Comparable<T> comparable = (Comparable<T>) o;
+        Node<T> temp = root;
+        while(temp != null){
+            int compare = comparable.compareTo(temp.key);
+            if (compare == 0) return true;
+            temp = compare < 0 ? temp.left : temp.right;
+        }
         return false;
     }
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new AVLTreeIterator<>(root, root != null ? findMin(root) : null);
     }
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] array = new Object[size];
+        int i = 0;
+        for (T t : this) {
+            array[i++] = t;
+        }
+        return array;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] a) {
-        return null;
+        if(a.length < size) return (T1[]) toArray();
+        int i = 0;
+        for (T t : this) {
+            a[i++] = (T1) t;
+        }
+        for (int j = i; j < a.length; j++) {
+            a[j] = null;
+        }
+        return a;
     }
 
     @Override
     public boolean add(T t) {
         size++;
         root = insert(root, t);
-        return true; // todo check it
+        return true;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean remove(Object o) {
+        if (o == null || !contains(o)) return false;
         size--;
-        root = remove(root, (T)o);
-        return false;
+        root = remove(root, (Comparable<T>) o);
+        return true;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
+        for (Object o : c) {
+            if(!contains(o)) return false;
+        }
+        return true;
     }
 
     @Override
@@ -63,25 +90,38 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         for (T t : c) {
             add(t);
         }
-        return false;
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        boolean removed = false;
         for (Object t : c) {
-            remove(t);
+            removed |= remove(t);
         }
-        return false;
+        return removed;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean retainAll(Collection<?> c) {
-        return false;
+        T[] array = (T[]) toArray();
+        boolean removed = false;
+        for (T t : array) {
+            if(!c.contains(t)) removed |= remove(t);
+        }
+        return removed;
     }
 
     @Override
     public void clear() {
+        root = null;
+        size = 0;
+    }
 
+    @Override
+    public String toString() {
+        return Arrays.toString(toArray());
     }
 
     private static <K extends Comparable<K>> int height(Node<K> node) {
@@ -89,7 +129,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
     }
 
     private static <K extends Comparable<K>> int balanceFactor(Node<K> node) {
-        return height(node.left) - height(node.right);
+        return height(node.right) - height(node.left);
     }
 
     private static <K extends Comparable<K>> void fixHeight(Node<K> node) {
@@ -106,22 +146,18 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
     }
 
     private static <K extends Comparable<K>> Node<K> inOrderSuccessor(Node<K> node, Node<K> root) {
-        if(node.right != null)
-            return findMin(node.right);
-        Node<K> succ = null;
+        if(node.right != null) return findMin(node.right);
+        Node<K> successor = null;
         while(root != null) {
             int compare = node.key.compareTo(root.key);
             if(compare < 0){
-                succ = root;
+                successor = root;
                 root = root.left;
             }
-            else if(compare > 0) {
-                root = root.right;
-            }
-            else
-                break;
+            else if(compare > 0) root = root.right;
+            else break;
         }
-        return succ;
+        return successor;
     }
 
     private static <K extends Comparable<K>> Node<K> rotateLeft(Node<K> node) {
@@ -162,6 +198,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         return balance(node);
     }
 
+
     private static  <K extends Comparable<K>> Node<K> findMin(Node<K> node) {
         return node.left == null ? node : findMin(node.left);
     }
@@ -173,7 +210,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         return balance(node);
     }
 
-    private static  <K extends Comparable<K>> Node<K> remove(Node<K> node, K key) {
+    private static  <K extends Comparable<K>> Node<K> remove(Node<K> node, Comparable<K> key) {
         if (node == null) return null;
         else {
             int compare = key.compareTo(node.key);
@@ -205,6 +242,30 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
 
         private Node(K key) {
             this.key = key;
+        }
+    }
+
+    private static final class AVLTreeIterator<E extends Comparable<E>> implements Iterator<E>{
+
+        private final Node<E> root;
+        private Node<E> current;
+
+        private AVLTreeIterator(Node<E> root, Node<E> min) {
+            this.root = root;
+            this.current = min;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public E next() {
+            if (current == null) throw new NoSuchElementException("No elements found");
+            Node<E> prev = this.current;
+            current = inOrderSuccessor(this.current, root);
+            return prev.key;
         }
     }
 }
