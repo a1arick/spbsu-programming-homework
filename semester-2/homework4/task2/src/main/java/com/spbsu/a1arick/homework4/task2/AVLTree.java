@@ -2,7 +2,7 @@ package com.spbsu.a1arick.homework4.task2;
 
 import java.util.*;
 
-public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
+public class AVLTree<T extends Comparable<T>> implements Collection<T> {
 
     private Node<T> root;
 
@@ -24,7 +24,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         if (o == null || !(o instanceof Comparable)) return false;
         Comparable<T> comparable = (Comparable<T>) o;
         Node<T> temp = root;
-        while(temp != null){
+        while (temp != null) {
             int compare = comparable.compareTo(temp.key);
             if (compare == 0) return true;
             temp = compare < 0 ? temp.left : temp.right;
@@ -50,7 +50,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
     @Override
     @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] a) {
-        if(a.length < size) return (T1[]) toArray();
+        if (a.length < size) return (T1[]) toArray();
         int i = 0;
         for (T t : this) {
             a[i++] = (T1) t;
@@ -80,7 +80,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
-            if(!contains(o)) return false;
+            if (!contains(o)) return false;
         }
         return true;
     }
@@ -105,10 +105,9 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
     @Override
     @SuppressWarnings("unchecked")
     public boolean retainAll(Collection<?> c) {
-        T[] array = (T[]) toArray();
         boolean removed = false;
-        for (T t : array) {
-            if(!c.contains(t)) removed |= remove(t);
+        for (T t : this) {
+            if (!c.contains(t)) removed |= remove(t);
         }
         return removed;
     }
@@ -121,7 +120,15 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
 
     @Override
     public String toString() {
-        return Arrays.toString(toArray());
+        return new ArrayList<>(this).toString();
+    }
+
+    String printTree() {
+        return printNode(root);
+    }
+
+    private static String printNode(Node node) {
+        return node == null ? "" : String.format("(%s left:%s right:%s)", node.key.toString(), printNode(node.left), printNode(node.right));
     }
 
     private static <K extends Comparable<K>> int height(Node<K> node) {
@@ -140,21 +147,20 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         Node<K> left = node.left;
         node.left = left.right;
         left.right = node;
-        fixHeight(left);
         fixHeight(node);
+        fixHeight(left);
         return left;
     }
 
     private static <K extends Comparable<K>> Node<K> inOrderSuccessor(Node<K> node, Node<K> root) {
-        if(node.right != null) return findMin(node.right);
+        if (node.right != null) return findMin(node.right);
         Node<K> successor = null;
-        while(root != null) {
+        while (root != null) {
             int compare = node.key.compareTo(root.key);
-            if(compare < 0){
+            if (compare < 0) {
                 successor = root;
                 root = root.left;
-            }
-            else if(compare > 0) root = root.right;
+            } else if (compare > 0) root = root.right;
             else break;
         }
         return successor;
@@ -164,12 +170,12 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         Node<K> right = node.right;
         node.right = right.left;
         right.left = node;
-        fixHeight(right);
         fixHeight(node);
+        fixHeight(right);
         return right;
     }
 
-    private static  <K extends Comparable<K>> Node<K> balance(Node<K> node) {
+    private static <K extends Comparable<K>> Node<K> balance(Node<K> node) {
         fixHeight(node);
         int balanceFactor = balanceFactor(node);
         if (balanceFactor == 2) {
@@ -189,38 +195,35 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
     private static <K extends Comparable<K>> Node<K> insert(Node<K> node, K key) {
         if (node == null)
             return new Node<>(key);
-        else if (key.compareTo(node.key) < 0){
+        else if (key.compareTo(node.key) < 0) {
             node.left = insert(node.left, key);
-        }
-        else{
+        } else {
             node.right = insert(node.right, key);
         }
         return balance(node);
     }
 
 
-    private static  <K extends Comparable<K>> Node<K> findMin(Node<K> node) {
+    private static <K extends Comparable<K>> Node<K> findMin(Node<K> node) {
         return node.left == null ? node : findMin(node.left);
     }
 
-    private static  <K extends Comparable<K>> Node<K> removeMin(Node<K> node) {
+    private static <K extends Comparable<K>> Node<K> removeMin(Node<K> node) {
         if (node.left == null)
             return node.right;
         node.left = removeMin(node.left);
         return balance(node);
     }
 
-    private static  <K extends Comparable<K>> Node<K> remove(Node<K> node, Comparable<K> key) {
+    private static <K extends Comparable<K>> Node<K> remove(Node<K> node, Comparable<K> key) {
         if (node == null) return null;
         else {
             int compare = key.compareTo(node.key);
             if (compare < 0) {
                 node.left = remove(node.left, key);
-            }
-            else if (compare > 0) {
+            } else if (compare > 0) {
                 node.right = remove(node.right, key);
-            }
-            else {
+            } else {
                 Node<K> left = node.left;
                 Node<K> right = node.right;
                 if (right == null)
@@ -234,7 +237,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         return balance(node);
     }
 
-    private static final class Node<K>{
+    private static final class Node<K> {
         private K key;
         private int height = 1;
         private Node<K> left = null;
@@ -245,7 +248,7 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T>  {
         }
     }
 
-    private static final class AVLTreeIterator<E extends Comparable<E>> implements Iterator<E>{
+    private static final class AVLTreeIterator<E extends Comparable<E>> implements Iterator<E> {
 
         private final Node<E> root;
         private Node<E> current;
