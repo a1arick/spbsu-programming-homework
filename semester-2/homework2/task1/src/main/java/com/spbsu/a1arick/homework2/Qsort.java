@@ -2,7 +2,7 @@ package com.spbsu.a1arick.homework2;
 
 public class Qsort implements SortAlgorithm {
     @Override
-    public void Sort(int[] a) {
+    public void sort(int[] a) {
         qsort(a, 0, a.length - 1);
     }
 

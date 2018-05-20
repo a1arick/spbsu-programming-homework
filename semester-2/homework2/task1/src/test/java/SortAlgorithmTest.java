@@ -7,6 +7,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertTrue;
 
+
+
 public class SortAlgorithmTest {
     @Test
     public void bubble() {
@@ -30,7 +32,7 @@ public class SortAlgorithmTest {
             a[i] = ThreadLocalRandom.current().nextInt();
         }
 
-        sortAlgorithm.Sort(a);
+        sortAlgorithm.sort(a);
 
         for (int i = 1; i < n; i++) {
             if (a[i - 1] > a[i])

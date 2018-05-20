@@ -3,7 +3,7 @@ package com.spbsu.a1arick.homework2;
 public class BubleSort implements SortAlgorithm {
 
     @Override
-    public void Sort(int[] a) {
+    public void sort(int[] a) {
         int n = a.length;
         int temp = 0;
         for (int i = 0; i < n; i++) {
