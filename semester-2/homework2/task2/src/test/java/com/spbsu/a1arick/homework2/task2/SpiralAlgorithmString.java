@@ -1,10 +1,9 @@
 package com.spbsu.a1arick.homework2.task2;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
-public class SpiralAlgString extends AbstractSpiralAlg {
+public class SpiralAlgorithmString extends AbstractSpiralAlgorithm {
 
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -13,7 +12,7 @@ public class SpiralAlgString extends AbstractSpiralAlg {
     }
 
     @Override
-    public void вывести(int[][] a) {
-        вывести(a, new PrintStream(byteArrayOutputStream));
+    public void print(int[][] a) {
+        printToStream(a, new PrintStream(byteArrayOutputStream));
     }
 }

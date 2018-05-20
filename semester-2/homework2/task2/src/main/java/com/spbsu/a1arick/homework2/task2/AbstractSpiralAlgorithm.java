@@ -2,9 +2,9 @@ package com.spbsu.a1arick.homework2.task2;
 
 import java.io.PrintStream;
 
-abstract class AbstractSpiralAlg implements Выводилка {
+abstract class AbstractSpiralAlgorithm implements Printer {
 
-    public void вывести(int[][] a, PrintStream printStream) {
+    public void printToStream(int[][] a, PrintStream printStream) {
         int startIndex = a[0].length / 2;
         printStream.print(a[startIndex][startIndex]);
         printStream.print(" ");

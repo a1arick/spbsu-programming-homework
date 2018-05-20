@@ -1,12 +1,11 @@
 package com.spbsu.a1arick.homework2.task2;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner in = new Scanner(new File("in.txt"));
+    public static void main(String[] args) throws IOException {
+        Scanner in = new Scanner(System.in);
         int n = in.nextInt();
         int arr[][] = new int[n][n];
         for (int i = 0; i < n; i++) {
@@ -14,14 +13,14 @@ public class Main {
                 arr[i][j] = in.nextInt();
             }
         }
-        Scanner console = new Scanner(System.in);
-        String line = console.nextLine();
-        Выводилка выводилка;
+        in.nextLine();
+        String line = in.nextLine();
+        Printer printer;
         if (line.equals("console")) {
-            выводилка = new SpiralAlgConsole();
+            printer = new SpiralAlgorithmConsole();
         } else {
-            выводилка = new SpiralAlgFile();
+            printer = new SpiralAlgorithmFile("out.txt");
         }
-        выводилка.вывести(arr);
+        printer.print(arr);
     }
 }
