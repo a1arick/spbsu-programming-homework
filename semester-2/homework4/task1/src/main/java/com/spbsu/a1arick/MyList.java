@@ -1,15 +1,6 @@
 package com.spbsu.a1arick;
 
 public class MyList<T> {
-    private static class Node<K> {
-        private K value;
-        private Node<K> next = null;
-
-        private Node (K value) {
-            this.value = value;
-        }
-    }
-
     private Node<T> head = null;
 
     private int size = 0;
@@ -66,5 +57,14 @@ public class MyList<T> {
 
     public boolean isEmpty(){
         return head == null;
+    }
+
+    private static class Node<K> {
+        private K value;
+        private Node<K> next = null;
+
+        private Node (K value) {
+            this.value = value;
+        }
     }
 }
