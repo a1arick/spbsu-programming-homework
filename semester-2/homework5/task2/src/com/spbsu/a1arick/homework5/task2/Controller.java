@@ -1,4 +1,4 @@
-package sample;
+package com.spbsu.a1arick.homework5.task2;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
