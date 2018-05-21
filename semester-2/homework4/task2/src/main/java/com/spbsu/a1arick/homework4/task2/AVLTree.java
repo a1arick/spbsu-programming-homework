@@ -2,6 +2,12 @@ package com.spbsu.a1arick.homework4.task2;
 
 import java.util.*;
 
+/**
+ * AVL tree custom implementation using {@link Collection} interface
+ * @param <T> the type of objects that can be stored in AVL tree
+ *
+ * @author  a1rick
+ */
 public class AVLTree<T extends Comparable<T>> implements Collection<T> {
 
     private Node<T> root;
