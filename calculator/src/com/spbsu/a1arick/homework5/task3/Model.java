@@ -1,8 +1,8 @@
-package sample;
+package com.spbsu.a1arick.homework5.task3;
 
 public class Model {
-    public long calculation(long a, long b, String operation){
-        switch (operation){
+    public long calculation(long a, long b, String operation) {
+        switch (operation) {
             case "+":
                 return a + b;
             case "-":
