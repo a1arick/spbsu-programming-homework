@@ -1,8 +1,8 @@
-package sample;
+package com.spbsu.a1arick.homework5.task1;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
+        import javafx.fxml.FXML;
+        import javafx.scene.control.ProgressBar;
+        import javafx.scene.control.Slider;
 
 public class Controller {
     @FXML
