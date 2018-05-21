@@ -5,7 +5,7 @@ public class MyList<T> {
 
     private int size = 0;
 
-    public void add(T x) {
+    public void add(T x) throws ElementAlreadyExistsException {
         Node<T> node = new Node<>(x);
         if (head == null) {
             head = node;
@@ -20,7 +20,7 @@ public class MyList<T> {
         size++;
     }
 
-    public void remove(T x) {
+    public void remove(T x) throws ElementNotFoundException {
         Node<T> cur = head;
         Node<T> prev = head;
 

@@ -20,7 +20,7 @@ public class UniqueListTest {
     }
 
     @Test
-    public void testAdd() {
+    public void testAdd() throws Exception {
         list.add("A");
         list.add("B");
         list.add("C");
@@ -30,18 +30,18 @@ public class UniqueListTest {
     }
 
     @Test(expected = ElementAlreadyExistsException.class)
-    public void testElementAlreadyExistsException() {
+    public void testElementAlreadyExistsException() throws Exception {
         list.add("A");
         list.add("A");
     }
 
     @Test(expected = ElementNotFoundException.class)
-    public void testEmptyListElementNotFoundException() {
+    public void testEmptyListElementNotFoundException() throws Exception {
         list.remove("ololol");
     }
 
     @Test(expected = ElementNotFoundException.class)
-    public void testListElementNotFoundException() {
+    public void testListElementNotFoundException() throws Exception {
         list.add("A");
         list.add("B");
         list.add("C");
@@ -49,7 +49,7 @@ public class UniqueListTest {
     }
 
     @Test
-    public void testRemove() {
+    public void testRemove() throws Exception {
         list.add("A");
         list.add("B");
         list.add("C");
