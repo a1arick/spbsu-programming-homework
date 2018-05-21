@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
 
+/**
+ * Hash table implementation using {@link LinkedList} for buckets
+ *
+ * @param <K> object type for keys
+ * @param <V> object type for values
+ */
 public class HashTable<K, V> {
     private ArrayList<LinkedList<Entry<K, V>>> table;
     private HashFunction<K> hashFunction;
@@ -21,13 +27,13 @@ public class HashTable<K, V> {
     }
 
     public void add(K key, V value) {
-        if(key == null){
+        if (key == null) {
             throw new IllegalArgumentException("Key is null");
         }
         int index = hashFunction.hash(key) % table.size();
         LinkedList<Entry<K, V>> bucket = table.get(index);
         for (Entry<K, V> entry : bucket) {
-            if(entry.key.equals(key)){
+            if (entry.key.equals(key)) {
                 entry.key = key;
                 entry.value = value;
                 return;
@@ -41,12 +47,12 @@ public class HashTable<K, V> {
     }
 
     public boolean delete(K key) {
-        if(key == null){
+        if (key == null) {
             throw new IllegalArgumentException("Key is null");
         }
         int index = hashFunction.hash(key) % table.size();
         LinkedList<Entry<K, V>> bucket = table.get(index);
-        if (bucket.remove(new Entry<>(key, (V) null))){
+        if (bucket.remove(new Entry<>(key, (V) null))) {
             size--;
             if (bucket.size() > 0) {
                 conflictNumber--;
@@ -56,14 +62,14 @@ public class HashTable<K, V> {
         return false;
     }
 
-    public V get(K key){
-        if(key == null){
+    public V get(K key) {
+        if (key == null) {
             throw new IllegalArgumentException("Key is null");
         }
         int index = hashFunction.hash(key) % table.size();
         LinkedList<Entry<K, V>> bucket = table.get(index);
         for (Entry<K, V> entry : bucket) {
-            if(entry.key.equals(key)){
+            if (entry.key.equals(key)) {
                 return entry.value;
             }
         }
@@ -80,7 +86,7 @@ public class HashTable<K, V> {
 
     public int getMaxListSize() {
         int result = 0;
-        for (LinkedList list: table) {
+        for (LinkedList list : table) {
             result = Integer.max(result, list.size());
         }
         return result;
@@ -90,7 +96,7 @@ public class HashTable<K, V> {
         return (double) size() / table.size();
     }
 
-    private final static class Entry<K1 ,V1>{
+    private final static class Entry<K1, V1> {
         private K1 key;
         private V1 value;
 
