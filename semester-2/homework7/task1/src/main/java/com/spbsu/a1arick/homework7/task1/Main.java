@@ -29,13 +29,13 @@ public class Main {
 
     public static void main(String[] args) {
         Power power = new Power(4);
-        ClassPrinter classPrinter = new ClassPrinter(power.getClass());
-        classPrinter.getName();
-        classPrinter.getModifiers();
-        classPrinter.getSuperclass();
-        classPrinter.getInterfaces();
-        classPrinter.getFields();
-        classPrinter.getConstructors();
-        classPrinter.getMethods();
+        ClassPrinter1 classPrinter1 = new ClassPrinter1(power.getClass());
+        classPrinter1.getName();
+        classPrinter1.getModifiers();
+        classPrinter1.getSuperclass();
+        classPrinter1.getInterfaces();
+        classPrinter1.getFields();
+        classPrinter1.getConstructors();
+        classPrinter1.getMethods();
     }
 }
