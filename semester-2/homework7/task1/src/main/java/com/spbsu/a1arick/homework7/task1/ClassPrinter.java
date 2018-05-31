@@ -1,113 +1,160 @@
 package com.spbsu.a1arick.homework7.task1;
 
-
-import java.lang.reflect.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-/** Class printer using reflection mechanism */
 public class ClassPrinter {
 
-    /**
-     * Returns the string containing reflected code of given class
-     *
-     * @param clazz class to be reflected
-     * @return the string containing reflected code of given class
-     */
-    public static String print(Class<?> clazz) {
-        return classDeclarationToString(clazz)
-                + " { \n"
-                + classFieldsToString(clazz)
-                + classConstructorsToString(clazz)
-                + classMethodsToString(clazz)
-                + innerClassesToString(clazz)
-                + "\n} \n";
+
+    public static String print(Class clazz) {
+        StringBuilder builder = new StringBuilder();
+        addPackage(builder, clazz);
+        addClass("", builder, clazz);
+        return builder.toString();
     }
 
-    private static String classDeclarationToString(Class<?> clazz) {
-        StringBuilder result = new StringBuilder();
-        if (clazz.getModifiers() != 0) {
-            result.append(Modifier.toString(clazz.getModifiers()));
-            result.append(" ");
+    private static void addPackage(StringBuilder builder, Class clazz) {
+        builder.append(clazz.getPackage())
+                .append(';')
+                .append('\n')
+                .append('\n');
+    }
+
+    private static void addClass(String tabs, StringBuilder builder, Class clazz) {
+        addAnnotations(tabs, builder, clazz.getAnnotations());
+        addClassName(tabs, builder, clazz);
+        addFields(tabs + "\t", builder, clazz);
+        builder.append('\n').append(tabs).append("}\n\n");
+    }
+
+    private static void addAnnotations(String tabs, StringBuilder builder, Annotation[] annotations){
+        Arrays.stream(annotations).forEach(annotation ->  builder.append(tabs).append(annotation).append('\n'));
+    }
+
+    private static void addClassName(String tabs, StringBuilder builder, Class clazz){
+        String typeParameters = Arrays.stream(clazz.getTypeParameters())
+                .map(Object::toString)
+                .collect(Collectors.joining(", ", "<", ">"));
+        builder.append(tabs)
+                .append(Modifier.toString(clazz.getModifiers()))
+                .append(" class ")
+                .append(clazz.getSimpleName())
+                .append(typeParameters)
+                .append(' ');
+        if(!clazz.getSuperclass().equals(Object.class)){
+            builder.append("extends ")
+                    .append(clazz.getGenericSuperclass())
+                    .append(' ');
         }
-        result.append("class ").append(clazz.getSimpleName());
-        if (clazz.getTypeParameters().length != 0) {
-            result.append(Arrays.stream(clazz.getTypeParameters())
-                    .map(Type::getTypeName)
-                    .collect(Collectors.joining(", ", "<", ">")));
+        builder.append(Arrays.stream(clazz.getGenericInterfaces())
+                .map(Object::toString)
+                .collect(Collectors.joining(", ", "implements ", "")));
+        builder.append(" {\n\n");
+    }
+
+    private static void addFields(String tabs, StringBuilder builder, Class clazz){
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            addAnnotations(tabs, builder, field.getAnnotations());
+            builder.append(tabs)
+                    .append(Modifier.toString(field.getModifiers()))
+                    .append(field.getGenericType().getTypeName())
+                    .append(' ')
+                    .append(field.getName())
+                    .append(";\n\n");
         }
-        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
-            result.append(" extends ");
-            result.append(clazz.getSuperclass().getSimpleName());
+    }
+
+
+    private Class clazz;
+    public ClassPrinter(Class clazz) {
+        this.clazz = clazz;
+    }
+
+    public void getName() {
+        System.out.println(clazz.getSimpleName());
+    }
+
+    public void getModifiers() {
+        int mods = clazz.getModifiers();
+        Modifier.toString(mods);
+        if (Modifier.isPublic(mods)) {
+            System.out.println("public");
         }
-        if (clazz.getInterfaces().length != 0) {
-            result.append(Arrays.stream(clazz.getInterfaces())
-                    .map(Class::getSimpleName)
-                    .collect(Collectors.joining(", ", " implements ", "")));
+        if (Modifier.isAbstract(mods)) {
+            System.out.println("abstract");
         }
-        return result.toString();
-    }
-
-    private static String classFieldsToString(Class<?> clazz) {
-        if (clazz.getDeclaredFields().length == 0) {
-            return "";
+        if (Modifier.isFinal(mods)) {
+            System.out.println("final");
         }
-        return Arrays.stream(clazz.getDeclaredFields())
-                .map(ClassPrinter::fieldToString)
-                .collect(Collectors.joining(";\n", "\n// Fields: \n", ";\n"));
     }
 
-    private static String fieldToString(Field field) {
-        return Modifier.toString(field.getModifiers()) + " "
-                + field.getType().getSimpleName() + " "
-                + field.getName();
+    public void getSuperclass() {
+        clazz.getSuperclass();
     }
 
-    private static String classConstructorsToString(Class<?> clazz) {
-        if (clazz.getDeclaredConstructors().length == 0) {
-            return "";
+    public void getInterfaces() {
+        Class c = clazz;
+        c = LinkedList.class;
+        Class[] interfaces = c.getInterfaces();
+        System.out.println("Constructors");
+        System.out.println("--------------------------------(");
+        for (Class cInterface : interfaces) {
+            System.out.println(cInterface.getName());
         }
-        return Arrays.stream(clazz.getDeclaredConstructors())
-                .map(constructor -> constructorToString(clazz, constructor))
-                .collect(Collectors.joining(";\n", "\n// Constructors: \n", ";\n"));
+        System.out.println("--------------------------------)");
     }
 
-    private static String constructorToString(Class<?> clazz, Constructor constructor) {
-        return Modifier.toString(constructor.getModifiers()) + " "
-                + clazz.getSimpleName()
-                + Arrays.stream(constructor.getParameterTypes())
-                .map(Type::getTypeName)
-                .collect(Collectors.joining(", ", "(", ")"));
-    }
-
-    private static String classMethodsToString(Class<?> clazz) {
-        if (clazz.getDeclaredMethods().length == 0) {
-            return "";
+    public void getFields() {
+        Field[] publicFields = clazz.getFields();
+        System.out.println("Fields");
+        System.out.println("--------------------------------(");
+        for (Field field : publicFields) {
+            Class fieldType = field.getType();
+            System.out.println("Имя: " + field.getName());
+            System.out.println("Тип: " + fieldType.getName());
         }
-        return Arrays.stream(clazz.getDeclaredMethods())
-                .map(ClassPrinter::methodToString)
-                .collect(Collectors.joining(";\n", "\n// Methods: \n", ";\n"));
-
+        System.out.println("--------------------------------)");
     }
 
-    private static String methodToString(Method method) {
-        return Modifier.toString(method.getModifiers()) + " "
-                + method.getName()
-                + Arrays.stream(method.getParameters())
-                .map(parameter -> parameter.getType() + " " + parameter.getName())
-                .collect(Collectors.joining(", ", "(", ")"))
-                + ((method.getExceptionTypes().length == 0) ? "" :
-                Arrays.stream(method.getExceptionTypes())
-                        .map(Type::getTypeName)
-                        .collect(Collectors.joining(", ", " throws ", "")));
-    }
-
-    private static String innerClassesToString(Class<?> clazz) {
-        StringBuilder result = new StringBuilder();
-        for (Class<?> innerClass : clazz.getDeclaredClasses()) {
-            result.append(print(innerClass));
+    public void getConstructors() {
+        Constructor[] constructors = clazz.getConstructors();
+        System.out.println("Constructors");
+        System.out.println("--------------------------------(");
+        for (Constructor constructor : constructors) {
+            Class[] paramTypes = constructor.getParameterTypes();
+            for (Class paramType : paramTypes) {
+                System.out.print(paramType.getName() + " ");
+            }
+            System.out.println();
         }
-        return result.toString();
+        System.out.println("--------------------------------)");
     }
+
+    public void getMethods() {
+        Method[] methods = clazz.getMethods();
+        System.out.println("Methods");
+        System.out.println("--------------------------------(");
+        for (Method method : methods) {
+            System.out.println("Имя: " + method.getName());
+            System.out.println("Возвращаемый тип: " + method.getReturnType().getName());
+
+            Class[] paramTypes = method.getParameterTypes();
+            System.out.print("Типы параметров: ");
+            for (Class paramType : paramTypes) {
+                System.out.print(" " + paramType.getName());
+            }
+            System.out.println();
+        }
+        System.out.println("--------------------------------)");
+    }
+
 
 }
