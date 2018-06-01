@@ -3,12 +3,20 @@ package com.spbsu.a1arick.homework7.task1;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
+
+/**
+ * Class for printing class structure
+ */
 public class ClassPrinter {
 
-
+    /**
+     * Prints class structure
+     * @param clazz to print
+     * @return class structure
+     */
     public static String print(Class clazz) {
         StringBuilder builder = new StringBuilder();
         addPackage(builder, clazz);
@@ -17,161 +25,146 @@ public class ClassPrinter {
     }
 
     private static void addPackage(StringBuilder builder, Class clazz) {
-        builder.append(clazz.getPackage())
-                .append(';')
-                .append('\n')
-                .append('\n');
+        builder.append(clazz.getPackage()).append(";\n\n");
     }
 
     private static void addClass(String tabs, StringBuilder builder, Class clazz) {
         addAnnotations(tabs, builder, clazz.getAnnotations());
         addClassName(tabs, builder, clazz);
+        builder.append(" {\n\n");
         addFields(tabs + "\t", builder, clazz);
-        addConstructor(tabs , builder, clazz);
-        builder.append('\n').append(tabs).append("}\n\n");
+        addConstructors(tabs + "\t" , builder, clazz);
+        addMethods(tabs + "\t" , builder, clazz);
+        Arrays.stream(clazz.getDeclaredClasses()).forEach(nestedClass -> addClass(tabs + "\t", builder, nestedClass));
+        builder.append(tabs).append("}\n\n");
     }
 
     private static void addAnnotations(String tabs, StringBuilder builder, Annotation[] annotations){
-        Arrays.stream(annotations).forEach(annotation ->  builder.append(tabs).append(annotation).append('\n'));
+        Arrays.stream(annotations).forEach(annotation -> builder.append(tabs).append(annotation).append('\n'));
+    }
+
+    private static String getAnnotations(Annotation[] annotations){
+        return Arrays.stream(annotations).map(Object::toString).collect(Collectors.joining(" "));
     }
 
     private static void addClassName(String tabs, StringBuilder builder, Class clazz){
-        String typeParameters = Arrays.stream(clazz.getTypeParameters())
-                .map(Object::toString)
-                .collect(Collectors.joining(", ", "<", ">"));
+        String typeParameters = getTypeParameters(clazz.getTypeParameters());
         builder.append(tabs)
-                .append(Modifier.toString(clazz.getModifiers()))
-                .append(" class ")
+                .append(getModifiers(clazz))
                 .append(clazz.getSimpleName())
-                .append(typeParameters)
-                .append(' ');
-        if(!clazz.getSuperclass().equals(Object.class)){
+                .append(typeParameters);
+        if(clazz.getSuperclass() != null && !clazz.getSuperclass().equals(Object.class) && !clazz.getSuperclass().equals(Enum.class)){
             builder.append("extends ")
                     .append(clazz.getGenericSuperclass())
                     .append(' ');
         }
-        builder.append(Arrays.stream(clazz.getGenericInterfaces())
-                .map(Object::toString)
-                .collect(Collectors.joining(", ", "implements ", "")));
-        builder.append(" {\n\n");
+        if (!clazz.isAnnotation()) {
+            String interfaces = Arrays.stream(clazz.getGenericInterfaces())
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+
+            String action = clazz.isInterface() ? " extends " : " implements ";
+
+            builder.append(interfaces.length() > 0 ? action + interfaces : "");
+        }
     }
 
     private static void addFields(String tabs, StringBuilder builder, Class clazz){
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            addAnnotations(tabs, builder, field.getAnnotations());
+        if (clazz.isEnum()) {
+            //noinspection unchecked
             builder.append(tabs)
-                    .append(Modifier.toString(field.getModifiers()))
-                    .append(field.getGenericType().getTypeName())
-                    .append(' ')
-                    .append(field.getName())
-                    .append(";\n\n");
+                    .append(EnumSet.allOf(clazz).stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", ", "", ";\n\n")));
         }
+        Arrays.stream(clazz.getDeclaredFields())
+                .filter(field -> !field.isSynthetic() && !field.isEnumConstant())
+                .forEach(field -> addField(tabs, builder, clazz, field));
     }
 
-    private static void addConstructor(String tabs, StringBuilder builder, Class clazz) {
-        if (clazz.getDeclaredConstructors().length == 0) {
-            return ;
-        }
-        //addAnnotations(tabs, builder, clazz.getAnnotations());
-        builder.append(Arrays.stream(clazz.getDeclaredConstructors())
-                .map(constructor -> constructorToString(tabs, clazz, constructor))
-                .collect(Collectors.joining( ";\n", "\n", ";\n")));
+    private static void addField(String tabs, StringBuilder builder, Class clazz, Field field) {
+        field.setAccessible(true);
+        addAnnotations(tabs, builder, field.getAnnotations());
+        builder.append(tabs)
+                .append(getModifiers(field.getModifiers()))
+                .append(field.getGenericType().getTypeName())
+                .append(' ')
+                .append(field.getName())
+                .append(";\n\n");
     }
 
-    private static String constructorToString(String tabs, Class clazz, Constructor constructor) {
+    private static void addConstructors(String tabs, StringBuilder builder, Class clazz) {
+        Arrays.stream(clazz.getDeclaredConstructors())
+                .forEach(constructor -> addConstructor(tabs, builder, clazz, constructor));
+    }
 
-        return Modifier.toString(constructor.getModifiers()) + " "
-                + clazz.getSimpleName()
-                + Arrays.stream(constructor.getParameterTypes())
-                .map(Type::getTypeName)
+    private static void addConstructor(String tabs, StringBuilder builder, Class clazz, Constructor constructor) {
+        constructor.setAccessible(true);
+        addAnnotations(tabs, builder, constructor.getAnnotations());
+        int[] counter = {0};
+        Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+        String args = Arrays.stream(constructor.getGenericParameterTypes())
+                .map(type -> getAnnotations(parameterAnnotations[counter[0]]) + " " + type.getTypeName() + " arg" + (counter[0]++))
                 .collect(Collectors.joining(", ", "(", ")"));
+        String exceptions = Arrays.stream(constructor.getGenericExceptionTypes())
+                .map(Type::getTypeName)
+                .collect(Collectors.joining(", "));
+        builder.append(tabs)
+                .append(getModifiers(constructor.getModifiers()))
+                .append(clazz.getSimpleName())
+                .append(args)
+                .append(exceptions.length() > 0 ? " throws " + exceptions : "")
+                .append(";\n\n");
     }
 
-
-    private Class clazz;
-    public ClassPrinter(Class clazz) {
-        this.clazz = clazz;
+    private static void addMethods(String tabs, StringBuilder builder, Class clazz) {
+        Arrays.stream(clazz.getDeclaredMethods())
+                .forEach(method -> addMethod(tabs, builder, clazz, method));
     }
 
-    public void getName() {
-        System.out.println(clazz.getSimpleName());
+    private static void addMethod(String tabs, StringBuilder builder, Class clazz, Method method) {
+        method.setAccessible(true);
+        addAnnotations(tabs, builder, method.getAnnotations());
+        int[] counter = {0};
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        String args = Arrays.stream(method.getGenericParameterTypes())
+                .map(type -> getAnnotations(parameterAnnotations[counter[0]]) + " " + type.getTypeName() + " arg" + (counter[0]++))
+                .collect(Collectors.joining(", ", "(", ")"));
+        String exceptions = Arrays.stream(method.getGenericExceptionTypes())
+                .map(Type::getTypeName)
+                .collect(Collectors.joining(", "));
+        builder.append(tabs)
+                .append(getModifiers(method.getModifiers()))
+                .append(getTypeParameters(method.getTypeParameters()))
+                .append(method.getGenericReturnType().getTypeName())
+                .append(' ')
+                .append(method.getName())
+                .append(args)
+                .append(exceptions.length() > 0 ? " throws " + exceptions : "")
+                .append(clazz.isAnnotation() && method.getDefaultValue() != null ? " default " + method.getDefaultValue() : "")
+                .append(";\n\n");
     }
 
-    public void getModifiers() {
-        int mods = clazz.getModifiers();
-        Modifier.toString(mods);
-        if (Modifier.isPublic(mods)) {
-            System.out.println("public");
+    private static String getModifiers(Class clazz) {
+        if (clazz.isAnnotation()) {
+            return getModifiers(clazz.getModifiers() & (~Modifier.INTERFACE) & (~Modifier.ABSTRACT)) + "@interface ";
+        } else if (clazz.isEnum()) {
+            return getModifiers(clazz.getModifiers()) + "enum ";
+        } else if (clazz.isInterface()) {
+            return getModifiers(clazz.getModifiers());
+        } else {
+            return getModifiers(clazz.getModifiers()) + "class ";
         }
-        if (Modifier.isAbstract(mods)) {
-            System.out.println("abstract");
-        }
-        if (Modifier.isFinal(mods)) {
-            System.out.println("final");
-        }
     }
 
-    public void getSuperclass() {
-        clazz.getSuperclass();
+    private static String getModifiers(int modifiers) {
+        return Modifier.toString(modifiers) + (modifiers != 0 ? " " : "");
     }
 
-    public void getInterfaces() {
-        Class c = clazz;
-        c = LinkedList.class;
-        Class[] interfaces = c.getInterfaces();
-        System.out.println("Constructors");
-        System.out.println("--------------------------------(");
-        for (Class cInterface : interfaces) {
-            System.out.println(cInterface.getName());
+    private static String getTypeParameters(TypeVariable[] typeParameters) {
+        if(typeParameters.length == 0) {
+            return "";
         }
-        System.out.println("--------------------------------)");
+        return Arrays.stream(typeParameters).map(Object::toString).collect(Collectors.joining(", ", "<", "> "));
     }
-
-    public void getFields() {
-        Field[] publicFields = clazz.getFields();
-        System.out.println("Fields");
-        System.out.println("--------------------------------(");
-        for (Field field : publicFields) {
-            Class fieldType = field.getType();
-            System.out.println("Имя: " + field.getName());
-            System.out.println("Тип: " + fieldType.getName());
-        }
-        System.out.println("--------------------------------)");
-    }
-
-    public void getConstructors() {
-        Constructor[] constructors = clazz.getConstructors();
-        System.out.println("Constructors");
-        System.out.println("--------------------------------(");
-        for (Constructor constructor : constructors) {
-            Class[] paramTypes = constructor.getParameterTypes();
-            for (Class paramType : paramTypes) {
-                System.out.print(paramType.getName() + " ");
-            }
-            System.out.println();
-        }
-        System.out.println("--------------------------------)");
-    }
-
-    public void getMethods() {
-        Method[] methods = clazz.getMethods();
-        System.out.println("Methods");
-        System.out.println("--------------------------------(");
-        for (Method method : methods) {
-            System.out.println("Имя: " + method.getName());
-            System.out.println("Возвращаемый тип: " + method.getReturnType().getName());
-
-            Class[] paramTypes = method.getParameterTypes();
-            System.out.print("Типы параметров: ");
-            for (Class paramType : paramTypes) {
-                System.out.print(" " + paramType.getName());
-            }
-            System.out.println();
-        }
-        System.out.println("--------------------------------)");
-    }
-
-
 }
