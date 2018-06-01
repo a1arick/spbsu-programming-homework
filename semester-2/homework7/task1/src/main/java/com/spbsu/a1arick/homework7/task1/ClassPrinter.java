@@ -1,10 +1,7 @@
 package com.spbsu.a1arick.homework7.task1;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
@@ -30,6 +27,7 @@ public class ClassPrinter {
         addAnnotations(tabs, builder, clazz.getAnnotations());
         addClassName(tabs, builder, clazz);
         addFields(tabs + "\t", builder, clazz);
+        addConstructor(tabs , builder, clazz);
         builder.append('\n').append(tabs).append("}\n\n");
     }
 
@@ -70,6 +68,25 @@ public class ClassPrinter {
                     .append(field.getName())
                     .append(";\n\n");
         }
+    }
+
+    private static void addConstructor(String tabs, StringBuilder builder, Class clazz) {
+        if (clazz.getDeclaredConstructors().length == 0) {
+            return ;
+        }
+        //addAnnotations(tabs, builder, clazz.getAnnotations());
+        builder.append(Arrays.stream(clazz.getDeclaredConstructors())
+                .map(constructor -> constructorToString(tabs, clazz, constructor))
+                .collect(Collectors.joining( ";\n", "\n", ";\n")));
+    }
+
+    private static String constructorToString(String tabs, Class clazz, Constructor constructor) {
+
+        return Modifier.toString(constructor.getModifiers()) + " "
+                + clazz.getSimpleName()
+                + Arrays.stream(constructor.getParameterTypes())
+                .map(Type::getTypeName)
+                .collect(Collectors.joining(", ", "(", ")"));
     }
 
 

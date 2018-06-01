@@ -23,6 +23,15 @@ public abstract class Car<T, P, R, S, F>
 
     private String name;
 
+    public Car(int initialCapacity, String name) {
+        super(initialCapacity);
+        this.name = name;
+    }
+
+    private Car(String name) {
+        this.name = name;
+    }
+
     @SampleAnnotation
     @XmlAnyElement
     private final Map<String, Comparable<Number>> map = Collections.emptyMap();
