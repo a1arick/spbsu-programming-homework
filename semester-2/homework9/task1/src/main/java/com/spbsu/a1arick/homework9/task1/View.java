@@ -1,5 +1,7 @@
 package com.spbsu.a1arick.homework9.task1;
 
+import com.spbsu.a1arick.homework9.task1.client.Client;
+import com.spbsu.a1arick.homework9.task1.server.TicTacToeController;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,17 +12,19 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.util.function.BiPredicate;
+
 
 /**
  * View for Tic-tac-toe game
  */
-public class View extends Application implements TicTacToe{
+public class View extends Application implements TicTacToe, Client{
     private static final int N = 3;
     private static final double magicShiftNumber = 20.0 / N;
     private static final double width = 100.0;
     private static final double height = 100.0;
     private Button[][] buttons = new Button[N][N];
-    private Controller controller = new Controller(N);
+    private TicTacToeController controller = new TicTacToeController(N);
     private Bots bot1 = new Bots(N);
 
     private boolean endGame = false;
@@ -145,5 +149,15 @@ public class View extends Application implements TicTacToe{
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void set(int i, int j, boolean isCross) {
+
+    }
+
+    @Override
+    public Pair<Integer, Integer> nextTurn(BiPredicate<Integer, Integer> canMakeTurn) {
+        return null;
     }
 }

@@ -1,12 +1,13 @@
 package com.spbsu.a1arick.homework9.task1;
 
+import com.spbsu.a1arick.homework9.task1.server.TicTacToeController;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ControllerTest {
+public class TicTacToeControllerTest {
 
-    private Controller controller = new Controller(3);
+    private TicTacToeController controller = new TicTacToeController(3);
 
     @Test
     public void canMakeTurn() {

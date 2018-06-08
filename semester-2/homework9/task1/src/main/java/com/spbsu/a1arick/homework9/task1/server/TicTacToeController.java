@@ -1,11 +1,11 @@
-package com.spbsu.a1arick.homework9.task1;
+package com.spbsu.a1arick.homework9.task1.server;
 
 import java.util.function.Function;
 
 /**
  * Class for controlling Tic-tac-toe game
  */
-public class Controller {
+public class TicTacToeController {
     private final int n;
     private int[][] turns;
     private boolean[][] used;
@@ -13,21 +13,23 @@ public class Controller {
     private int size = 0;
 
 
-    public Controller(int n) {
+    public TicTacToeController(int n) {
         this.n = n;
         this.turns = new int[n][n];
         this.used = new boolean[n][n];
     }
 
     public boolean makeTurn(int i, int j) {
-        if (!canMakeTurn(i, j)) {
-            throw new IllegalArgumentException("Can't make turn");
-        }
+        if (!canMakeTurn(i, j)) throw new IllegalArgumentException("Can't make turn");
         turns[i][j] = turn ? 1 : 2;
         turn = !turn;
         size++;
         used[i][j] = true;
         return turn;
+    }
+
+    public boolean check(boolean isCross) {
+        return check(isCross ? 2 : 1);
     }
 
     public boolean check(int label) {
@@ -44,8 +46,7 @@ public class Controller {
     }
 
     public boolean canMakeTurn(int i, int j) {
-        if (isFinished())
-            return false;
+        if (isFinished()) return false;
         boolean outOfBorders = i < 0 || j < 0 || i >= n || j >= n;
         return !outOfBorders && !used[i][j];
     }

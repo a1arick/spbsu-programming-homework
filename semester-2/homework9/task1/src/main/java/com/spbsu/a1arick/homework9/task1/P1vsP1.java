@@ -1,5 +1,6 @@
 package com.spbsu.a1arick.homework9.task1;
 
+import com.spbsu.a1arick.homework9.task1.server.TicTacToeController;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -15,7 +16,7 @@ public class P1vsP1 extends Application implements TicTacToe {
     private static final double width = 100.0;
     private static final double height = 100.0;
     private Button[][] buttons = new Button[N][N];
-    private Controller controller = new Controller(N);
+    private TicTacToeController controller = new TicTacToeController(N);
     private int xWins = 0;
     private int oWins = 0;
     private int draw = 1;
