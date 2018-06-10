@@ -15,24 +15,25 @@ import java.util.List;
 
 public class ClientRunnable implements Runnable {
 
-    private final InetAddress address;
-    private final int port;
     private final GameClient client;
+    private final Socket socket;
+    private final BufferedReader is;
+    private final PrintWriter os;
 
-    public ClientRunnable(InetAddress address, int port, GameClient client) {
-        this.address = address;
-        this.port = port;
+    public ClientRunnable(InetAddress address, int port, GameClient client) throws IOException {
         this.client = client;
+        this.socket = new Socket(address, port);
+        this.is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.os = new PrintWriter(socket.getOutputStream());
     }
 
     @Override
     public void run() {
-        try (Socket s1 = new Socket(address, port);
-             BufferedReader is = new BufferedReader(new InputStreamReader(s1.getInputStream()));
-             PrintWriter os = new PrintWriter(s1.getOutputStream())) {
+        try (Socket socket = this.socket;
+             BufferedReader is = this.is;
+             PrintWriter os = this.os) {
             try {
-                while (handleNextCommand(is, os));
-                System.out.println("Socket closed successfully");
+                while (handleNextCommand(is, os)) ;
             } catch (Exception e) {
                 send(os, Command.ERROR, e.getMessage() != null ? e.getMessage() : e.getClass());
                 throw e;
@@ -75,8 +76,9 @@ public class ClientRunnable implements Runnable {
                 Pair<Integer, Integer> nextTurn = client.nextTurn((i, j) -> {
                     send(os, Command.SERVER_NEXT_TURN_TRY, i, j);
                     try {
-                        return Command.RESULT_TRUE == Command.valueOf(is.readLine());
-                    } catch (IOException e) {
+                        Pair<Command, List<String>> result = Command.parse(is.readLine());
+                        return Command.RESULT_TRUE == result.getKey();
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 });

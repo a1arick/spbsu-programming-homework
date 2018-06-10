@@ -6,64 +6,83 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 
 /**
  * View for Tic-tac-toe game
  */
 public class View extends Application {
-    private static final int N = 3;
-    private static final double magicShiftNumber = 20.0 / N;
+    private static final int n = 3;
+    private static final double magicShiftNumber = 19.0 / (n + 1);
     private static final double width = 100.0;
     private static final double height = 100.0;
-    private Button[][] buttons = new Button[N][N];
+    private Button[][] buttons = new Button[n][n];
+    private TextField gameIdField;
 
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-
         root.getChildren().add(getGrid(primaryStage));
-        Scene scene = new Scene(root, N * View.width, N * View.height);
+        Scene scene = new Scene(root, (n + 1) * View.width, (n + 1) * View.height);
         primaryStage.setScene(scene);
+        primaryStage.setMinHeight(500);
+        primaryStage.setMinWidth(500);
+        primaryStage.setMaxWidth(900);
+        primaryStage.setMaxWidth(900);
         primaryStage.show();
-
-        try {
-            ClientRunnable runnable = new ClientRunnable(InetAddress.getLocalHost(), 1111, new ViewClient(this));
-            new Thread(runnable).start();
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
     }
+
     private Pane getGrid(Stage primaryStage) {
         GridPane gridPane = new GridPane();
 
-        Button newGame = new Button();
-        newGame.setText("New game");
-        newGame.setOnMouseClicked(e -> clear());
-        gridPane.add(newGame,1, 0);
-
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 Button b = buttons[i][j] = new Button();
                 gridPane.add(b, j, 1 + i);
-                b.minWidthProperty().bind(primaryStage.widthProperty().divide(N).subtract(magicShiftNumber));
-                b.minHeightProperty().bind(primaryStage.heightProperty().divide(N).subtract(magicShiftNumber));
-                b.maxWidthProperty().bind(primaryStage.widthProperty().divide(N).subtract(magicShiftNumber));
-                b.maxHeightProperty().bind(primaryStage.heightProperty().divide(N).subtract(magicShiftNumber));
+                b.minWidthProperty().bind(primaryStage.widthProperty().divide(n + 1).subtract(magicShiftNumber));
+                b.minHeightProperty().bind(primaryStage.heightProperty().divide(n + 1).subtract(magicShiftNumber));
+                b.maxWidthProperty().bind(primaryStage.widthProperty().divide(n + 1).subtract(magicShiftNumber));
+                b.maxHeightProperty().bind(primaryStage.heightProperty().divide(n + 1).subtract(magicShiftNumber));
             }
         }
 
+        TextField hostField = new TextField();
+        hostField.setPromptText("server host name");
+        gridPane.add(hostField, n + 1, 1);
 
+        TextField portField = new TextField();
+        portField.setPromptText("server port");
+        gridPane.add(portField, n + 1, 2);
+
+        this.gameIdField = new TextField();
+        gameIdField.setPromptText("game id");
+        gridPane.add(gameIdField, n + 1, 3);
+
+        Button findGameButton = new Button("Find game");
+        findGameButton.setOnMouseClicked(event -> {
+            try {
+                InetAddress host = InetAddress.getByName(hostField.getText());
+                int port = Integer.parseInt(portField.getText());
+                ClientRunnable runnable = new ClientRunnable(host, port, new ViewClient(this));
+                new Thread(runnable).start();
+                hostField.disableProperty().setValue(true);
+                portField.disableProperty().setValue(true);
+                gameIdField.disableProperty().setValue(true);
+                findGameButton.disableProperty().setValue(true);
+            } catch (Exception e) {
+                showMessage(e.getMessage());
+            }
+        });
+        gridPane.add(findGameButton, n + 1, 4);
 
         return gridPane;
     }
@@ -80,39 +99,43 @@ public class View extends Application {
     }
 
     public void clear() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                buttons[i][j].setText("");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Button button = buttons[i][j];
+                button.setText("");
+                button.disableProperty().setValue(true);
             }
         }
     }
 
-    public BlockingQueue<Pair<Integer, Integer>> nextTurn(BiPredicate<Integer, Integer> canMakeTurn) {
+    public String getGameId() {
+        return gameIdField.getText();
+    }
+
+    public void nextTurn(BiPredicate<Integer, Integer> canMakeTurn, Consumer<Pair<Integer, Integer>> consumer) {
         toggleButtons(true);
-        SynchronousQueue<Pair<Integer, Integer>> turn = new SynchronousQueue<>();
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                Button b = buttons[i][j] = new Button();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Button b = buttons[i][j];
                 int row = i;
                 int column = j;
                 b.setOnMouseClicked(event -> {
                     if (canMakeTurn.test(row, column)) {
                         toggleButtons(false);
-                        turn.add(new Pair<>(row, column));
+                        consumer.accept(new Pair<>(row, column));
                     }
                 });
             }
         }
-        return turn;
     }
 
     private void toggleButtons(boolean enable) {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 Button b = buttons[i][j];
                 if (enable && b.getText().equals("")) {
                     b.disableProperty().setValue(false);
-                } else if(!enable) {
+                } else if (!enable) {
                     b.disableProperty().setValue(true);
                 }
             }
@@ -121,5 +144,9 @@ public class View extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public boolean isClosed() {
+        return false;
     }
 }

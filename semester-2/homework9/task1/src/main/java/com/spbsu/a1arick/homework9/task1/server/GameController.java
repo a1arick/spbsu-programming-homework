@@ -29,7 +29,7 @@ public class GameController {
     }
 
     public boolean check(boolean isCross) {
-        return check(isCross ? 2 : 1);
+        return check(isCross ? 1 : 2);
     }
 
     public boolean check(int label) {

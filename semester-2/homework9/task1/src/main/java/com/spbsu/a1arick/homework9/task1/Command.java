@@ -19,8 +19,7 @@ public enum Command {
     RESULT_TRUE,
     RESULT_FALSE,
     TEXT,
-    GAME_ID,
-    ;
+    GAME_ID,;
 
     public void checkLength(List<?> args, int length) throws WrongCommandFormatException {
         if (args.size() < length) {

@@ -28,7 +28,7 @@ public class ClientSocketWrapper implements AutoCloseable {
         this.writer = new PrintWriter(socket.getOutputStream());
     }
 
-    public void init( boolean isCross) {
+    public void init(boolean isCross) {
         this.isCross = isCross;
         this.name = isCross ? "cross" : "zero";
         this.clientName = name + "[" + socket + "]";
@@ -63,9 +63,9 @@ public class ClientSocketWrapper implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        try(BufferedReader reader = this.reader;
-            PrintWriter writer = this.writer;
-            Socket socket = this.socket) {
+        try (BufferedReader reader = this.reader;
+             PrintWriter writer = this.writer;
+             Socket socket = this.socket) {
             sendCommand(Command.CLOSE);
         } finally {
             reader = null;

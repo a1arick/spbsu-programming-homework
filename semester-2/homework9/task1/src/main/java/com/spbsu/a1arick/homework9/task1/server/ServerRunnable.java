@@ -25,7 +25,7 @@ public class ServerRunnable implements Runnable {
     @Override
     public void run() {
         ExecutorService executorService = Executors.newCachedThreadPool();
-        try(ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server started on port: " + port);
             while (true) {
                 try {

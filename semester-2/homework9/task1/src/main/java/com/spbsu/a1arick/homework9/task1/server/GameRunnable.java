@@ -28,19 +28,18 @@ public class GameRunnable implements Runnable {
              ClientSocketWrapper zeroWrapper = this.zeroWrapper) {
             List<ClientSocketWrapper> wrappers = Arrays.asList(crossWrapper, zeroWrapper);
 
-            while(true) {
+            while (true) {
                 System.out.println("Started new game for clients: " + wrappers);
                 ClientSocketWrapper currentWrapper = crossWrapper;
+                controller.clear();
                 for (ClientSocketWrapper wrapper : wrappers) {
                     wrapper.sendCommand(Command.CLEAR);
-
-                    wrapper.sendCommand(Command.TEXT, "GLHF! New game started");
-                    wrapper.sendCommand(Command.TEXT, "Current turn is: " + currentWrapper.getName());
+                    wrapper.sendCommand(Command.TEXT, "GLHF! New game started. Current turn is: " + wrapper.getName());
                 }
 
                 while (true) {
                     boolean makeTurn = makeTurn(currentWrapper, wrappers);
-                    if(makeTurn || controller.isFinished()) {
+                    if (makeTurn || controller.isFinished()) {
                         String message = makeTurn ? "Win " + currentWrapper.getName() : "Draw";
                         for (ClientSocketWrapper wrapper : wrappers) {
                             wrapper.sendCommand(Command.TEXT, message);
@@ -74,7 +73,7 @@ public class GameRunnable implements Runnable {
                     break;
                 case SERVER_NEXT_TURN:
                     boolean makeTurn = controller.makeTurn(i, j);
-                    if(makeTurn) {
+                    if (makeTurn) {
                         for (ClientSocketWrapper wrapper : wrappers) {
                             wrapper.sendCommand(Command.SET, i, j, currentWrapper.isCross());
                         }
