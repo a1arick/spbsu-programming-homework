@@ -12,7 +12,7 @@ public interface MySerializable {
     /**
      * Serializes object to {@link OutputStream}
      * @param out output stream
-     * @throws IOException if output stream can't be written
+     * @throws IOException if {@link OutputStream} can't be written
      */
     void serialize(OutputStream out) throws IOException;
 
