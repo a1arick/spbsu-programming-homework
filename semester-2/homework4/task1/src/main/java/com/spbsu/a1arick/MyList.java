@@ -1,10 +1,21 @@
 package com.spbsu.a1arick;
 
+/**
+ * List that stores only unique values
+ *
+ * @param <T> object type to store in this list
+ */
 public class MyList<T> {
     private Node<T> head = null;
 
     private int size = 0;
 
+    /**
+     * Adds value to the list
+     *
+     * @param x to add
+     * @throws ElementAlreadyExistsException if value already stored in the list
+     */
     public void add(T x) throws ElementAlreadyExistsException {
         Node<T> node = new Node<>(x);
         if (head == null) {
@@ -20,6 +31,12 @@ public class MyList<T> {
         size++;
     }
 
+    /**
+     * Removes value to the list
+     *
+     * @param x to remove
+     * @throws ElementNotFoundException if value isn't stored in the list
+     */
     public void remove(T x) throws ElementNotFoundException {
         Node<T> cur = head;
         Node<T> prev = head;
@@ -32,13 +49,17 @@ public class MyList<T> {
         while (!x.equals(cur.value)) {
             prev = cur;
             cur = cur.next;
-            if(cur == null)
+            if (cur == null)
                 return;
         }
         prev.next = cur.next;
         size--;
     }
 
+    /**
+     * @param value to contains
+     * @return true if list contains value else false
+     */
     public boolean contains(T value) {
         if (isEmpty())
             return false;
@@ -51,11 +72,17 @@ public class MyList<T> {
         return false;
     }
 
-    public int size(){
+    /**
+     * @return List size
+     */
+    public int size() {
         return size;
     }
 
-    public boolean isEmpty(){
+    /**
+     * @return true if List is empty else false
+     */
+    public boolean isEmpty() {
         return head == null;
     }
 
@@ -63,7 +90,7 @@ public class MyList<T> {
         private K value;
         private Node<K> next = null;
 
-        private Node (K value) {
+        private Node(K value) {
             this.value = value;
         }
     }
