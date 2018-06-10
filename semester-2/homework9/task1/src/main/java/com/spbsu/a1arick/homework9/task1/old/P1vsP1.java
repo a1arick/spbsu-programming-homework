@@ -1,7 +1,6 @@
-package com.spbsu.a1arick.homework9.task1;
+package com.spbsu.a1arick.homework9.task1.old;
 
-import com.spbsu.a1arick.homework9.task1.client.Client;
-import com.spbsu.a1arick.homework9.task1.server.TicTacToeController;
+import com.spbsu.a1arick.homework9.task1.server.GameController;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,34 +9,24 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
-import java.util.function.BiPredicate;
-
-
-/**
- * View for Tic-tac-toe game
- */
-public class View extends Application implements TicTacToe, Client{
+public class P1vsP1 extends Application implements TicTacToe {
     private static final int N = 3;
     private static final double magicShiftNumber = 20.0 / N;
     private static final double width = 100.0;
     private static final double height = 100.0;
     private Button[][] buttons = new Button[N][N];
-    private TicTacToeController controller = new TicTacToeController(N);
-    private Bots bot1 = new Bots(N);
-
-    private boolean endGame = false;
-    private int playerWins = 0;
-    private int botWins = 0;
-    private int draw = 0;
+    private GameController controller = new GameController(N);
+    private int xWins = 0;
+    private int oWins = 0;
+    private int draw = 1;
 
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
 
         root.getChildren().add(getGrid(primaryStage));
-        Scene scene = new Scene(root, N * View.width, N * View.height);
+        Scene scene = new Scene(root, N * P1vsP1.width, N * P1vsP1.height);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -55,14 +44,19 @@ public class View extends Application implements TicTacToe, Client{
         showStats.setOnMouseClicked(e -> showStats());
         gridPane.add(showStats,2, 0);
 
+
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 Button b = buttons[i][j] = new Button();
                 int row = i;
                 int column = j;
-                b.setOnMouseClicked(event -> makeTurnPlayer(row, column));
+                b.setOnMouseClicked(event -> {
+                    if (!controller.canMakeTurn(row, column)) return;
+                    boolean turn = controller.makeTurn(row, column);
+                    b.setText(turn ? "X" : "O");
+                    check();
+                });
                 gridPane.add(b, j, 1 + i);
-
                 b.minWidthProperty().bind(primaryStage.widthProperty().divide(N).subtract(magicShiftNumber));
                 b.minHeightProperty().bind(primaryStage.heightProperty().divide(N).subtract(magicShiftNumber));
                 b.maxWidthProperty().bind(primaryStage.widthProperty().divide(N).subtract(magicShiftNumber));
@@ -70,51 +64,19 @@ public class View extends Application implements TicTacToe, Client{
             }
         }
 
-
-
         return gridPane;
-    }
-
-    public void makeTurnPlayer(int i, int j) {
-        if (!controller.canMakeTurn(i, j)) return;
-        boolean turn = controller.makeTurn(i, j);
-        buttons[i][j].setText("X");
-        check();
-        if(endGame)
-            endGame = false;
-        else
-            makeTurnBot();
-    }
-
-    public void makeTurnBot(){
-        Pair<Integer, Integer> temp = bot1.makeTurn();
-        int botI = temp.getKey();
-        int botJ = temp.getValue();
-        if(controller.canMakeTurn(botI, botJ)){
-            controller.makeTurn(botI, botJ);
-            buttons[botI][botJ].setText("O");
-            check();
-        }
-        else{
-            makeTurnBot();
-        }
     }
 
     @Override
     public void check() {
         if (controller.check(1)) {
-            playerWins++;
-            endGame = true;
-            showMessage("Player wins!!!");
-        }
-        else if (controller.check(2) ) {
-            botWins++;
-            endGame = true;
-            showMessage("Bot wins!!!");
-        }
-        else if (controller.isFinished()) {
+            oWins++;
+            showMessage("O win!!!");
+        } else if (controller.check(2)) {
+            xWins++;
+            showMessage("X win!!!");
+        } else if (controller.isFinished()) {
             draw++;
-            endGame = true;
             showMessage("Draw");
         }
     }
@@ -132,9 +94,10 @@ public class View extends Application implements TicTacToe, Client{
     public void showStats() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
-        alert.setContentText(String.format("Player wins: %d, Bot Wins: %d, Draw %d", playerWins, botWins, draw));
+        alert.setContentText(String.format("X wins: %d, O Wins: %d, Draw %d", xWins, oWins, draw));
         alert.showAndWait();
     }
+
 
     @Override
     public void clear() {
@@ -144,20 +107,10 @@ public class View extends Application implements TicTacToe, Client{
             }
         }
         controller.clear();
-
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    @Override
-    public void set(int i, int j, boolean isCross) {
-
-    }
-
-    @Override
-    public Pair<Integer, Integer> nextTurn(BiPredicate<Integer, Integer> canMakeTurn) {
-        return null;
-    }
 }

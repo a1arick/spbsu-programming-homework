@@ -11,26 +11,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClientSocketWrapper implements AutoCloseable {
 
-    private final Socket socket;
-    private final boolean isCross;
-    private final String name;
-    private final String clientName;
-    private final BufferedReader reader;
-    private final PrintWriter writer;
+    private Socket socket;
+    private boolean isCross;
+    private String name;
+    private String clientName;
+    private BufferedReader reader;
+    private PrintWriter writer;
 
-    public ClientSocketWrapper(Socket socket, boolean isCross) throws IOException {
+    public ClientSocketWrapper(Socket socket) throws IOException {
         this.socket = socket;
+        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.writer = new PrintWriter(socket.getOutputStream());
+    }
+
+    public void init( boolean isCross) {
         this.isCross = isCross;
         this.name = isCross ? "cross" : "zero";
         this.clientName = name + "[" + socket + "]";
-        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        writer = new PrintWriter(socket.getOutputStream());
     }
 
     public boolean isCross() {
@@ -50,24 +51,31 @@ public class ClientSocketWrapper implements AutoCloseable {
     }
 
     public Pair<Command, List<String>> applyCommand(Command command, Object... args) throws IOException, ClientErrorException, WrongCommandFormatException {
-        writer.println(command.name() + ':' + Arrays.stream(args).map(Object::toString).collect(Collectors.joining(":")));
+        writer.println(command.makeCommand(args));
         writer.flush();
-        String line = reader.readLine();
-        String[] receivedArgs = line.split(":");
-        if (args.length == 0) {
-            throw new WrongCommandFormatException(clientName);
+        Pair<Command, List<String>> pair = Command.parse(reader.readLine());
+        System.out.printf("Received new command: %s from socket: %s\n", pair, socket);
+        if (pair.getKey() == Command.ERROR) {
+            throw new ClientErrorException(clientName, pair.getValue().get(0));
         }
-        System.out.printf("Received new command: %s from socket: %s\n", line, socket);
-        Command receivedCommand = Command.valueOf(receivedArgs[0]);
-        List<String> argList = Arrays.stream(receivedArgs).skip(1).collect(Collectors.toList());
-        if (receivedCommand == Command.ERROR) {
-            throw new ClientErrorException(clientName, argList.get(0));
-        }
-        return new Pair<>(receivedCommand, argList);
+        return pair;
     }
 
     @Override
     public void close() throws Exception {
-        sendCommand(Command.CLOSE);
+        try(BufferedReader reader = this.reader;
+            PrintWriter writer = this.writer;
+            Socket socket = this.socket) {
+            sendCommand(Command.CLOSE);
+        } finally {
+            reader = null;
+            writer = null;
+            socket = null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return clientName;
     }
 }

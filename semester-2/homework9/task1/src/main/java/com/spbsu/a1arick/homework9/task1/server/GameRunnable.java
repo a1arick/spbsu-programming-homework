@@ -7,33 +7,33 @@ import com.spbsu.a1arick.homework9.task1.exceptions.WrongCommandFormatException;
 import javafx.util.Pair;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 
 public class GameRunnable implements Runnable {
 
-    private final Socket crossSocket;
-    private final Socket zeroSocket;
-    private final TicTacToeController controller;
+    private final ClientSocketWrapper crossWrapper;
+    private final ClientSocketWrapper zeroWrapper;
+    private final GameController controller;
 
-    public GameRunnable(Socket crossSocket, Socket zeroSocket, int n) {
-        this.crossSocket = crossSocket;
-        this.zeroSocket = zeroSocket;
-        this.controller = new TicTacToeController(n);
+    public GameRunnable(ClientSocketWrapper crossWrapper, ClientSocketWrapper zeroWrapper, int n) {
+        this.crossWrapper = crossWrapper;
+        this.zeroWrapper = zeroWrapper;
+        this.controller = new GameController(n);
     }
 
     @Override
     public void run() {
-        try (ClientSocketWrapper crossWrapper = new ClientSocketWrapper(crossSocket, true);
-             ClientSocketWrapper zeroWrapper = new ClientSocketWrapper(zeroSocket, false)) {
-
+        try (ClientSocketWrapper crossWrapper = this.crossWrapper;
+             ClientSocketWrapper zeroWrapper = this.zeroWrapper) {
             List<ClientSocketWrapper> wrappers = Arrays.asList(crossWrapper, zeroWrapper);
 
             while(true) {
+                System.out.println("Started new game for clients: " + wrappers);
                 ClientSocketWrapper currentWrapper = crossWrapper;
                 for (ClientSocketWrapper wrapper : wrappers) {
                     wrapper.sendCommand(Command.CLEAR);
+
                     wrapper.sendCommand(Command.TEXT, "GLHF! New game started");
                     wrapper.sendCommand(Command.TEXT, "Current turn is: " + currentWrapper.getName());
                 }

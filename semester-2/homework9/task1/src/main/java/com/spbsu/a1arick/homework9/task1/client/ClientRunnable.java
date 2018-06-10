@@ -11,17 +11,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClientRunnable implements Runnable {
 
     private final InetAddress address;
     private final int port;
-    private final Client client;
+    private final GameClient client;
 
-    public ClientRunnable(InetAddress address, int port, Client client) {
+    public ClientRunnable(InetAddress address, int port, GameClient client) {
         this.address = address;
         this.port = port;
         this.client = client;
@@ -36,7 +34,7 @@ public class ClientRunnable implements Runnable {
                 while (handleNextCommand(is, os));
                 System.out.println("Socket closed successfully");
             } catch (Exception e) {
-                send(os, Command.ERROR, e.getMessage());
+                send(os, Command.ERROR, e.getMessage() != null ? e.getMessage() : e.getClass());
                 throw e;
             }
         } catch (Exception e) {
@@ -48,14 +46,10 @@ public class ClientRunnable implements Runnable {
         if (client.isClosed()) {
             send(os, Command.ERROR, "closed by user");
         }
-        String line = is.readLine();
-        String[] args = line.split(":");
-        if (args.length == 0) {
-            throw new WrongCommandFormatException();
-        }
-        System.out.println("Received new command: " + line);
-        Command command = Command.valueOf(args[0]);
-        List<String> argList = Arrays.stream(args).skip(1).collect(Collectors.toList());
+        Pair<Command, List<String>> pair = Command.parse(is.readLine());
+        System.out.println("Received new command: " + pair);
+        Command command = pair.getKey();
+        List<String> argList = pair.getValue();
         switch (command) {
             case CLOSE:
                 send(os, Command.OK);
@@ -68,6 +62,9 @@ public class ClientRunnable implements Runnable {
             case CLEAR:
                 client.clear();
                 send(os, Command.OK);
+                break;
+            case GAME_ID:
+                send(os, Command.GAME_ID, client.gameId());
                 break;
             case SET:
                 command.checkLength(argList, 3);
@@ -92,7 +89,7 @@ public class ClientRunnable implements Runnable {
     }
 
     private static void send(PrintWriter os, Command command, Object... args) {
-        os.println(command.name() + ':' + Arrays.stream(args).map(Object::toString).collect(Collectors.joining(":")));
+        os.println(command.makeCommand(args));
         os.flush();
     }
 }

@@ -5,7 +5,7 @@ import java.util.function.Function;
 /**
  * Class for controlling Tic-tac-toe game
  */
-public class TicTacToeController {
+public class GameController {
     private final int n;
     private int[][] turns;
     private boolean[][] used;
@@ -13,19 +13,19 @@ public class TicTacToeController {
     private int size = 0;
 
 
-    public TicTacToeController(int n) {
+    public GameController(int n) {
         this.n = n;
         this.turns = new int[n][n];
         this.used = new boolean[n][n];
     }
 
     public boolean makeTurn(int i, int j) {
-        if (!canMakeTurn(i, j)) throw new IllegalArgumentException("Can't make turn");
+        if (!canMakeTurn(i, j)) return false;
         turns[i][j] = turn ? 1 : 2;
         turn = !turn;
         size++;
         used[i][j] = true;
-        return turn;
+        return true;
     }
 
     public boolean check(boolean isCross) {

@@ -1,6 +1,6 @@
-package com.spbsu.a1arick.homework9.task1;
+package com.spbsu.a1arick.homework9.task1.old;
 
-import com.spbsu.a1arick.homework9.task1.server.TicTacToeController;
+import com.spbsu.a1arick.homework9.task1.server.GameController;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -18,7 +18,7 @@ public class BotVSBot extends Application implements TicTacToe{
     private static final double width = 100.0;
     private static final double height = 100.0;
     private Button[][] buttons = new Button[N][N];
-    private TicTacToeController controller = new TicTacToeController(N);
+    private GameController controller = new GameController(N);
     private int xWins = 0;
     private int oWins = 0;
     private int draw = 1;

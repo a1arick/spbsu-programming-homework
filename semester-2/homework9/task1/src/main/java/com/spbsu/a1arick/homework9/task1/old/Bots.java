@@ -1,4 +1,4 @@
-package com.spbsu.a1arick.homework9.task1;
+package com.spbsu.a1arick.homework9.task1.old;
 
 import javafx.util.Pair;
 
