@@ -43,9 +43,7 @@ public class Controller {
     }
 
     public boolean canMakeTurn(int i, int j) {
-        boolean outOfBorders = i < 0 || j < 0 || i >= n || j >= n;
-        boolean alreadyUsed = used[i][j];
-        return !(outOfBorders || alreadyUsed || isFinished());
+        return !(i < 0 || j < 0 || i >= n || j >= n || used[i][j] || isFinished());
     }
 
     public boolean isFinished() {
