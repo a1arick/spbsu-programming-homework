@@ -1,10 +1,10 @@
 package com.spbsu.a1arick.homework2.task3;
 
 public class LinkedStack implements Stack {
+    private int size = 0;
 
     private Node head = null;
 
-    private int size = 0;
 
     @Override
     public void push(int x) {
@@ -13,12 +13,13 @@ public class LinkedStack implements Stack {
     }
 
     @Override
-    public int pop() throws DataSructureIsEmptyExeption {
+    public int pop() throws DataStructureIsEmptyException {
         if (isEmpty())
-            throw new DataSructureIsEmptyExeption("Queue is empty");
+            throw new DataStructureIsEmptyException("Queue is empty");
         else {
             int x = head.value;
             head = head.next;
+            size--;
             return x;
         }
     }
@@ -36,5 +37,6 @@ public class LinkedStack implements Stack {
             this.value = value;
             this.next = next;
         }
+
     }
 }

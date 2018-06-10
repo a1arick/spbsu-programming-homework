@@ -1,7 +1,7 @@
 package com.spbsu.a1arick.homework2.task3;
 
 public class Calculator {
-    public int solve(String s, Stack stack) throws DataSructureIsEmptyExeption {
+    public int solve(String s, Stack stack) throws DataStructureIsEmptyException {
         String[] strs = s.split(" ");
         Node[] nodes = new Node[strs.length];
         for (int i = 0; i < nodes.length; i++) {
@@ -16,7 +16,7 @@ public class Calculator {
     }
 
 
-    private int solve(Node[] nodes, Stack stack) throws DataSructureIsEmptyExeption {
+    private int solve(Node[] nodes, Stack stack) throws DataStructureIsEmptyException {
         for (int i = 0; i < nodes.length; i++) {
             Node node = nodes[i];
             if (node.isOperation()) {
