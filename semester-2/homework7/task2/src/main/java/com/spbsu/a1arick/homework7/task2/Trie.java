@@ -50,7 +50,9 @@ public class Trie implements MySerializable {
      */
     public boolean contains(String s) {
         checkNotNull(s);
-        if (s.isEmpty()) return isTerminal;
+        if (s.isEmpty()) {
+            return isTerminal;
+        }
         char c = s.charAt(0);
         Trie trie = children[c - 'a'];
         return trie != null && trie.contains(s.substring(1));
@@ -99,10 +101,14 @@ public class Trie implements MySerializable {
      */
     public int howManyStartWithPrefix(String s) {
         checkNotNull(s);
-        if (s.isEmpty()) return size;
+        if (s.isEmpty()) {
+            return size;
+        }
         char c = s.charAt(0);
         Trie trie = children[c - 'a'];
-        if (trie == null) return 0;
+        if (trie == null) {
+            return 0;
+        }
         return trie.howManyStartWithPrefix(s.substring(1));
     }
 
@@ -141,7 +147,9 @@ public class Trie implements MySerializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) return false;
         Trie trie = (Trie) o;
         return isTerminal == trie.isTerminal &&

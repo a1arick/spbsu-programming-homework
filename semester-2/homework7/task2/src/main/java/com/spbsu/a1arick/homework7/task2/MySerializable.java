@@ -12,14 +12,14 @@ public interface MySerializable {
     /**
      * Serializes object to {@link OutputStream}
      * @param out output stream
-     * @throws IOException
+     * @throws IOException if output stream can't be written
      */
     void serialize(OutputStream out) throws IOException;
 
     /**
      * Deserializes object from {@link InputStream}
      * @param in input stream
-     * @throws IOException
+     * @throws IOException if {@link InputStream} can't be read
      */
     void deserialize(InputStream in) throws IOException;
 }
