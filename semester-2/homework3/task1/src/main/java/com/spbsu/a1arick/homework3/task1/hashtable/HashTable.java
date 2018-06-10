@@ -26,9 +26,9 @@ public class HashTable<K, V> {
         this.hashFunction = hashFunction;
     }
 
-    public void add(K key, V value) {
+    public void add(K key, V value) throws NotFoundKeyException {
         if (key == null) {
-            throw new IllegalArgumentException("Key is null");
+            throw new NotFoundKeyException("Key is null");
         }
         int index = hashFunction.hash(key) % table.size();
         LinkedList<Entry<K, V>> bucket = table.get(index);
