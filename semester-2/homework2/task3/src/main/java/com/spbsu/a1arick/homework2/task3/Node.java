@@ -4,11 +4,11 @@ public class Node {
     private char operation = ' ';
     private int number;
 
-    public Node (int number) {
+    public Node(int number) {
         this.number = number;
     }
 
-    public Node (char operation){
+    public Node(char operation) {
         this.operation = operation;
     }
 
@@ -20,11 +20,11 @@ public class Node {
         return number;
     }
 
-    public boolean isOperation(){
+    public boolean isOperation() {
         return isOperation(operation);
     }
 
-    public static boolean isOperation(char c){
-        return c == '+' || c == '-' || c == '*' || c =='/';
+    public static boolean isOperation(char c) {
+        return c == '+' || c == '-' || c == '*' || c == '/';
     }
 }
