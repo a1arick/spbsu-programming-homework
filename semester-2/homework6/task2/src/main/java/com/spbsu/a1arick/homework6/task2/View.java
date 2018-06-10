@@ -11,28 +11,32 @@ import javafx.stage.Stage;
 
 public class View extends Application {
 
-    private static final int N = 3;
-    private static final double magicShiftNumber = 20.0 / N;
+    private static final int n = 3;
+    private static final double magicShiftNumber = 20.0 / n;
     private static final double width = 100.0;
     private static final double height = 100.0;
-    private Button[][] buttons = new Button[N][N];
-    private Controller controller = new Controller(N);
+    private Button[][] buttons = new Button[n][n];
+    private Controller controller = new Controller(n);
 
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
 
         root.getChildren().add(getGrid(primaryStage));
-        Scene scene = new Scene(root, N * View.width, N * View.height);
+        Scene scene = new Scene(root, n * View.width, n * View.height);
         primaryStage.setScene(scene);
+        primaryStage.setMinWidth(300);
+        primaryStage.setMinHeight(300);
+        primaryStage.setMaxHeight(900);
+        primaryStage.setMaxWidth(900);
         primaryStage.show();
     }
 
     private Pane getGrid(Stage primaryStage) {
         GridPane gridPane = new GridPane();
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 Button b = buttons[i][j] = new Button();
                 int row = i;
                 int column = j;
@@ -43,11 +47,10 @@ public class View extends Application {
                     check();
                 });
                 gridPane.add(b, j * (j + (int) b.getWidth()), i);
-
-                b.minWidthProperty().bind(primaryStage.widthProperty().divide(N).subtract(magicShiftNumber));
-                b.minHeightProperty().bind(primaryStage.heightProperty().divide(N).subtract(magicShiftNumber));
-                b.maxWidthProperty().bind(primaryStage.widthProperty().divide(N).subtract(magicShiftNumber));
-                b.maxHeightProperty().bind(primaryStage.heightProperty().divide(N).subtract(magicShiftNumber));
+                b.minWidthProperty().bind(primaryStage.widthProperty().divide(n).subtract(magicShiftNumber));
+                b.minHeightProperty().bind(primaryStage.heightProperty().divide(n).subtract(magicShiftNumber));
+                b.maxWidthProperty().bind(primaryStage.widthProperty().divide(n).subtract(magicShiftNumber));
+                b.maxHeightProperty().bind(primaryStage.heightProperty().divide(n).subtract(magicShiftNumber));
             }
         }
 
@@ -73,8 +76,8 @@ public class View extends Application {
     }
 
     private void clear() {
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 buttons[i][j].setText("");
             }
         }
