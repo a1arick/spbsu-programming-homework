@@ -18,6 +18,10 @@ public class View extends Application {
     private Button[][] buttons = new Button[n][n];
     private Controller controller = new Controller(n);
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
@@ -82,9 +86,5 @@ public class View extends Application {
             }
         }
         controller.clear();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
