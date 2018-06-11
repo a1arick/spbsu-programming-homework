@@ -11,17 +11,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class LazyFactoryTest {
-    private static class CountingSupplier implements Supplier<Integer>{
-
-        private AtomicInteger counter = new AtomicInteger();
-
-        @Override
-        public Integer get() {
-            return counter.incrementAndGet();
-        }
-    }
     @Test
     public void oneThreadLazyLogic() {
         testLazy(LazyFactory::createOneThreadLazy);
@@ -43,7 +35,7 @@ public class LazyFactoryTest {
             try {
                 countDownLatch.await();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
             Integer value = multiThreadLazy.get();
             assertEquals(Integer.valueOf(1), value);
@@ -73,7 +65,17 @@ public class LazyFactoryTest {
         assertEquals(Integer.valueOf(1), lazy.get());
         assertEquals(1, countingSupplier.counter.get());
 
-        assertEquals(null, lazyFunction.apply(() -> null).get());
+        assertNull(lazyFunction.apply(() -> null).get());
         assertEquals(Integer.valueOf(42), lazyFunction.apply(() -> 42).get());
+    }
+
+    private static class CountingSupplier implements Supplier<Integer> {
+
+        private AtomicInteger counter = new AtomicInteger();
+
+        @Override
+        public Integer get() {
+            return counter.incrementAndGet();
+        }
     }
 }

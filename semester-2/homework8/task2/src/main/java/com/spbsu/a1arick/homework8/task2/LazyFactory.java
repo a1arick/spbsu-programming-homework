@@ -9,18 +9,20 @@ public class LazyFactory {
 
     /**
      * Create not thread safe lazy supplier
+     *
      * @param supplier supplier to make lazy
-     * @param <T> type of object in supplier
+     * @param <T>      type of object in supplier
      * @return not thread safe lazy supplier
      */
     public static <T> Lazy<T> createOneThreadLazy(Supplier<T> supplier) {
         return new OneThreadLazy<>(supplier);
     }
-    
+
     /**
      * Create thread safe lazy supplier
+     *
      * @param supplier supplier to make lazy
-     * @param <T> type of object in supplier
+     * @param <T>      type of object in supplier
      * @return thread safe lazy supplier
      */
     public static <T> Lazy<T> createMultiThreadLazy(Supplier<T> supplier) {
@@ -29,9 +31,9 @@ public class LazyFactory {
 
     private static class OneThreadLazy<T> implements Lazy<T> {
 
+        private final Supplier<T> supplier;
         private T result = null;
         private boolean isComputed = false;
-        private final Supplier<T> supplier;
 
         public OneThreadLazy(Supplier<T> supplier) {
             this.supplier = supplier;
@@ -39,7 +41,7 @@ public class LazyFactory {
 
         @Override
         public synchronized T get() {
-            if(!isComputed){
+            if (!isComputed) {
                 this.isComputed = true;
                 result = supplier.get();
             }
@@ -48,9 +50,9 @@ public class LazyFactory {
     }
 
     private static class MultiThreadLazy<T> implements Lazy<T> {
+        private final Supplier<T> supplier;
         private T result = null;
         private volatile boolean isComputed = false;
-        private final Supplier<T> supplier;
 
         public MultiThreadLazy(Supplier<T> supplier) {
             this.supplier = supplier;
@@ -58,9 +60,9 @@ public class LazyFactory {
 
         @Override
         public T get() {
-            if(!isComputed){
-                synchronized (this){
-                    if(!isComputed) {
+            if (!isComputed) {
+                synchronized (this) {
+                    if (!isComputed) {
                         result = supplier.get();
                         isComputed = true;
                     }
