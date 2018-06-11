@@ -6,7 +6,8 @@ import com.spbsu.a1arick.homework3.task1.hash.impl.PolynomialHash;
 import com.spbsu.a1arick.homework3.task1.hash.impl.SumHash;
 import com.spbsu.a1arick.homework3.task1.hashtable.HashTable;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
@@ -89,17 +90,15 @@ public class Main {
         System.out.println("polynomial");
         System.out.println("sum");
         System.out.println("usual");
-        while (true) {
-            switch (in.next()) {
-                case "length":
-                    return new LengthHash();
-                case "polynomial":
-                    return new PolynomialHash();
-                case "sum":
-                    return new SumHash();
-                default:
-                    return Object::hashCode;
-            }
+        switch (in.next()) {
+            case "length":
+                return new LengthHash();
+            case "polynomial":
+                return new PolynomialHash();
+            case "sum":
+                return new SumHash();
+            default:
+                return Object::hashCode;
         }
     }
 

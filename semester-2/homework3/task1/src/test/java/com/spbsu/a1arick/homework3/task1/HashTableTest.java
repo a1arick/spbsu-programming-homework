@@ -5,8 +5,7 @@ import com.spbsu.a1arick.homework3.task1.hashtable.HashTable;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertFalse;
 
 public class HashTableTest {
@@ -28,24 +27,24 @@ public class HashTableTest {
     }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
         hashTable.add("A", 1);
         hashTable.add("B", 2);
         hashTable.add("C", 3);
         assertTrue(hashTable.delete("B"));
         assertFalse(hashTable.delete("B"));
-        assertEquals(null, hashTable.get("B"));
+        assertNull(hashTable.get("B"));
         assertEquals(2, hashTable.size());
     }
 
     @Test
-    public void testGet(){
+    public void testGet() {
         hashTable.add("A", 1);
         hashTable.add("B", 2);
         hashTable.add("C", 3);
         assertEquals(Integer.valueOf(1), hashTable.get("A"));
         assertEquals(Integer.valueOf(2), hashTable.get("B"));
-        assertEquals(null, hashTable.get("D"));
+        assertNull(hashTable.get("D"));
     }
 
     @Test

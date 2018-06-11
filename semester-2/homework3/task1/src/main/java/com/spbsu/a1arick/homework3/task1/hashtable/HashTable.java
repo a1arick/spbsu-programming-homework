@@ -18,6 +18,12 @@ public class HashTable<K, V> {
     private int size = 0;
     private int conflictNumber = 0;
 
+    /**
+     * Constructs hash table
+     *
+     * @param size         size
+     * @param hashFunction hash function
+     */
     public HashTable(int size, HashFunction<K> hashFunction) {
         table = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
@@ -26,9 +32,16 @@ public class HashTable<K, V> {
         this.hashFunction = hashFunction;
     }
 
-    public void add(K key, V value) throws NotFoundKeyException {
+    /**
+     * Adds mapping to hash table
+     *
+     * @param key   key
+     * @param value value
+     * @throws WrongKeyException if key is null
+     */
+    public void add(K key, V value) {
         if (key == null) {
-            throw new NotFoundKeyException("Key is null");
+            throw new WrongKeyException("Key is null");
         }
         int index = hashFunction.hash(key) % table.size();
         LinkedList<Entry<K, V>> bucket = table.get(index);
@@ -46,9 +59,16 @@ public class HashTable<K, V> {
         size++;
     }
 
+    /**
+     * Removes mapping from hash table
+     *
+     * @param key mapping key
+     * @return {@code true} if mapping was removed else {@code false}
+     * @throws WrongKeyException if key is null
+     */
     public boolean delete(K key) {
         if (key == null) {
-            throw new IllegalArgumentException("Key is null");
+            throw new WrongKeyException("Key is null");
         }
         int index = hashFunction.hash(key) % table.size();
         LinkedList<Entry<K, V>> bucket = table.get(index);
@@ -62,9 +82,16 @@ public class HashTable<K, V> {
         return false;
     }
 
+    /**
+     * Gets mapping by key
+     *
+     * @param key key
+     * @return mapping value if exists else {@code null}
+     * @throws WrongKeyException if key is null
+     */
     public V get(K key) {
         if (key == null) {
-            throw new IllegalArgumentException("Key is null");
+            throw new WrongKeyException("Key is null");
         }
         int index = hashFunction.hash(key) % table.size();
         LinkedList<Entry<K, V>> bucket = table.get(index);
@@ -76,14 +103,23 @@ public class HashTable<K, V> {
         return null;
     }
 
+    /**
+     * @return hash table size
+     */
     public int size() {
         return size;
     }
 
+    /**
+     * @return conflicts number in hash table
+     */
     public int getConflictNumber() {
         return conflictNumber;
     }
 
+    /**
+     * @return max chain size in hash table
+     */
     public int getMaxListSize() {
         int result = 0;
         for (LinkedList list : table) {
@@ -92,6 +128,9 @@ public class HashTable<K, V> {
         return result;
     }
 
+    /**
+     * @return hash table load factor
+     */
     public double loadFactor() {
         return (double) size() / table.size();
     }

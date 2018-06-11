@@ -9,7 +9,7 @@ public class SumHash implements HashFunction<String> {
     @Override
     public int hash(String text) {
         int result = 0;
-        for (char current: text.toCharArray()) {
+        for (char current : text.toCharArray()) {
             result += current;
         }
         return result;
