@@ -11,6 +11,7 @@ public interface MySerializable {
 
     /**
      * Serializes object to {@link OutputStream}
+     *
      * @param out output stream
      * @throws IOException if {@link OutputStream} can't be written
      */
@@ -18,6 +19,7 @@ public interface MySerializable {
 
     /**
      * Deserializes object from {@link InputStream}
+     *
      * @param in input stream
      * @throws IOException if {@link InputStream} can't be read
      */

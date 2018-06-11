@@ -6,7 +6,6 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import static org.junit.Assert.*;
 
@@ -104,7 +103,7 @@ public class TrieTest {
         assertEquals(root, deserializeTrie);
     }
 
-    private void addAllToRoot(String... strings){
+    private void addAllToRoot(String... strings) {
         for (String string : strings) {
             root.add(string);
         }

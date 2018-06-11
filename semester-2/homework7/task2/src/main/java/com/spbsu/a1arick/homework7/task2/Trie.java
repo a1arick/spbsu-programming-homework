@@ -15,6 +15,12 @@ public class Trie implements MySerializable {
     private boolean isTerminal = false;
     private int size = 0;
 
+    private static void checkNotNull(Object object) {
+        if (object == null) {
+            throw new IllegalArgumentException("Null value");
+        }
+    }
+
     /**
      * Adds string to the trie
      *
@@ -85,7 +91,6 @@ public class Trie implements MySerializable {
         return elementRemoved;
     }
 
-
     /**
      * @return the number of unique strings in the trie
      */
@@ -110,12 +115,6 @@ public class Trie implements MySerializable {
             return 0;
         }
         return trie.howManyStartWithPrefix(s.substring(1));
-    }
-
-    private static void checkNotNull(Object object) {
-        if (object == null) {
-            throw new IllegalArgumentException("Null value");
-        }
     }
 
     @Override
