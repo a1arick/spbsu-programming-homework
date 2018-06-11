@@ -1,137 +1,21 @@
 package com.spbsu.a1arick.homework4.task2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * AVL tree custom implementation using {@link Collection} interface
- * @param <T> the type of objects that can be stored in AVL tree
  *
- * @author  a1rick
+ * @param <T> the type of objects that can be stored in AVL tree
+ * @author a1rick
  */
 public class AVLTree<T extends Comparable<T>> implements Collection<T> {
 
     private Node<T> root;
 
     private int size = 0;
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean contains(Object o) {
-        if (o == null || !(o instanceof Comparable)) return false;
-        Comparable<T> comparable = (Comparable<T>) o;
-        Node<T> temp = root;
-        while (temp != null) {
-            int compare = comparable.compareTo(temp.key);
-            if (compare == 0) return true;
-            temp = compare < 0 ? temp.left : temp.right;
-        }
-        return false;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return new AVLTreeIterator<>(root, root != null ? findMin(root) : null);
-    }
-
-    @Override
-    public Object[] toArray() {
-        Object[] array = new Object[size];
-        int i = 0;
-        for (T t : this) {
-            array[i++] = t;
-        }
-        return array;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T1> T1[] toArray(T1[] a) {
-        if (a.length < size) return (T1[]) toArray();
-        int i = 0;
-        for (T t : this) {
-            a[i++] = (T1) t;
-        }
-        for (int j = i; j < a.length; j++) {
-            a[j] = null;
-        }
-        return a;
-    }
-
-    @Override
-    public boolean add(T t) {
-        size++;
-        root = insert(root, t);
-        return true;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean remove(Object o) {
-        if (o == null || !contains(o)) return false;
-        size--;
-        root = remove(root, (Comparable<T>) o);
-        return true;
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        for (Object o : c) {
-            if (!contains(o)) return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends T> c) {
-        for (T t : c) {
-            add(t);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        boolean removed = false;
-        for (Object t : c) {
-            removed |= remove(t);
-        }
-        return removed;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean retainAll(Collection<?> c) {
-        boolean removed = false;
-        for (T t : this) {
-            if (!c.contains(t)) removed |= remove(t);
-        }
-        return removed;
-    }
-
-    @Override
-    public void clear() {
-        root = null;
-        size = 0;
-    }
-
-    @Override
-    public String toString() {
-        return new ArrayList<>(this).toString();
-    }
-
-    String printTree() {
-        return printNode(root);
-    }
 
     private static String printNode(Node node) {
         return node == null ? "" : String.format("(%s left:%s right:%s)", node.key.toString(), printNode(node.left), printNode(node.right));
@@ -209,7 +93,6 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T> {
         return balance(node);
     }
 
-
     private static <K extends Comparable<K>> Node<K> findMin(Node<K> node) {
         return node.left == null ? node : findMin(node.left);
     }
@@ -241,6 +124,123 @@ public class AVLTree<T extends Comparable<T>> implements Collection<T> {
             }
         }
         return balance(node);
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean contains(Object o) {
+        if (o == null || !(o instanceof Comparable)) return false;
+        Comparable<T> comparable = (Comparable<T>) o;
+        Node<T> temp = root;
+        while (temp != null) {
+            int compare = comparable.compareTo(temp.key);
+            if (compare == 0) return true;
+            temp = compare < 0 ? temp.left : temp.right;
+        }
+        return false;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new AVLTreeIterator<>(root, root != null ? findMin(root) : null);
+    }
+
+    @Override
+    public Object[] toArray() {
+        Object[] array = new Object[size];
+        int i = 0;
+        for (T t : this) {
+            array[i++] = t;
+        }
+        return array;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T1> T1[] toArray(T1[] a) {
+        if (a.length < size) return (T1[]) toArray();
+        int i = 0;
+        for (T t : this) {
+            a[i++] = (T1) t;
+        }
+        for (int j = i; j < a.length; j++) {
+            a[j] = null;
+        }
+        return a;
+    }
+
+    @Override
+    public boolean add(T t) {
+        size++;
+        root = insert(root, t);
+        return true;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        if (o == null || !contains(o)) return false;
+        size--;
+        root = remove(root, (Comparable<T>) o);
+        return true;
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        for (Object o : c) {
+            if (!contains(o)) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        for (T t : c) {
+            add(t);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        boolean removed = false;
+        for (Object t : c) {
+            removed |= remove(t);
+        }
+        return removed;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        boolean removed = false;
+        for (T t : this) {
+            if (!c.contains(t)) removed |= remove(t);
+        }
+        return removed;
+    }
+
+    @Override
+    public void clear() {
+        root = null;
+        size = 0;
+    }
+
+    @Override
+    public String toString() {
+        return new ArrayList<>(this).toString();
+    }
+
+    String printTree() {
+        return printNode(root);
     }
 
     private static final class Node<K> {

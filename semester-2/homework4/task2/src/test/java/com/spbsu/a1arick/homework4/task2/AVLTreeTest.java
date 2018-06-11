@@ -12,6 +12,14 @@ public class AVLTreeTest {
 
     private AVLTree<Integer> tree;
 
+    private static ArrayList<Integer> generateList(int n) {
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            list.add(ThreadLocalRandom.current().nextInt());
+        }
+        return list;
+    }
+
     @Before
     public void setUp() {
         tree = new AVLTree<>();
@@ -91,14 +99,6 @@ public class AVLTreeTest {
         Arrays.sort(array);
         Object[] treeList = tree.toArray();
         assertArrayEquals(array, treeList);
-    }
-
-    private static ArrayList<Integer> generateList(int n) {
-        ArrayList<Integer> list = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            list.add(ThreadLocalRandom.current().nextInt());
-        }
-        return list;
     }
 
     @Test
