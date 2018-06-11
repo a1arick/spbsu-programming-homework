@@ -1,5 +1,6 @@
 package com.spbsu.a1arick.homework5.task3;
 
+import com.spbsu.a1arick.homework5.task3.exception.UnknownOperationException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -29,7 +30,7 @@ public class View {
     }
 
     @FXML
-    public void processOperator(ActionEvent event) {
+    public void processOperator(ActionEvent event) throws UnknownOperationException {
         String value = ((Button) event.getSource()).getText();
         if (!Objects.equals(value, "=")) {
             if (!operator.isEmpty()) return;
