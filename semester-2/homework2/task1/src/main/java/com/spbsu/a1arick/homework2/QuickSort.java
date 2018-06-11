@@ -1,12 +1,15 @@
 package com.spbsu.a1arick.homework2;
 
-public class Qsort implements SortAlgorithm {
+/**
+ * Quick sort algorithm
+ */
+public class QuickSort implements SortAlgorithm {
     @Override
     public void sort(int[] a) {
-        qsort(a, 0, a.length - 1);
+        sort(a, 0, a.length - 1);
     }
 
-    private void qsort(int[] a, int b, int e) {
+    private void sort(int[] a, int b, int e) {
         int l = b;
         int r = e;
         int piv = a[(l + r) / 2];
@@ -24,10 +27,11 @@ public class Qsort implements SortAlgorithm {
                 a[y2] = temp;
             }
         }
-        if (b < r)
-
-            qsort(a, b, r);
-        if (e > l)
-            qsort(a, l, e);
+        if (b < r) {
+            sort(a, b, r);
+        }
+        if (e > l) {
+            sort(a, l, e);
+        }
     }
 }
