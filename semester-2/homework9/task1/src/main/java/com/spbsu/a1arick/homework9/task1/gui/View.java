@@ -27,6 +27,7 @@ public class View extends Application {
     private static final double height = 100.0;
     private Button[][] buttons = new Button[n][n];
     private TextField gameIdField;
+    private ViewClient client;
 
     @Override
     public void start(Stage primaryStage) {
@@ -39,6 +40,13 @@ public class View extends Application {
         primaryStage.setMaxWidth(900);
         primaryStage.setMaxWidth(900);
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() {
+        if (this.client != null) {
+            this.client.close();
+        }
     }
 
     private Pane getGrid(Stage primaryStage) {
@@ -72,8 +80,11 @@ public class View extends Application {
             try {
                 InetAddress host = InetAddress.getByName(hostField.getText());
                 int port = Integer.parseInt(portField.getText());
-                ClientRunnable runnable = new ClientRunnable(host, port, new ViewClient(this));
+                this.client = new ViewClient(this);
+
+                ClientRunnable runnable = new ClientRunnable(host, port, client);
                 new Thread(runnable).start();
+
                 hostField.disableProperty().setValue(true);
                 portField.disableProperty().setValue(true);
                 gameIdField.disableProperty().setValue(true);
@@ -87,18 +98,18 @@ public class View extends Application {
         return gridPane;
     }
 
-    public void showMessage(String s) {
+    void showMessage(String s) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setContentText(s);
         alert.showAndWait();
     }
 
-    public void set(int i, int j, boolean isCross) {
+    void set(int i, int j, boolean isCross) {
         buttons[i][j].setText(isCross ? "X" : "O");
     }
 
-    public void clear() {
+    void clear() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 Button button = buttons[i][j];
@@ -108,11 +119,11 @@ public class View extends Application {
         }
     }
 
-    public String getGameId() {
+    String getGameId() {
         return gameIdField.getText();
     }
 
-    public void nextTurn(BiPredicate<Integer, Integer> canMakeTurn, Consumer<Pair<Integer, Integer>> consumer) {
+    void nextTurn(BiPredicate<Integer, Integer> canMakeTurn, Consumer<Pair<Integer, Integer>> consumer) {
         toggleButtons(true);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -144,9 +155,5 @@ public class View extends Application {
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    public boolean isClosed() {
-        return false;
     }
 }

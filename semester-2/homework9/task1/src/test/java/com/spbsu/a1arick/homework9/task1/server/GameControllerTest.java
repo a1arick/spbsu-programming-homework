@@ -1,10 +1,13 @@
-package com.spbsu.a1arick.homework9.task1;
+package com.spbsu.a1arick.homework9.task1.server;
 
-import com.spbsu.a1arick.homework9.task1.server.GameController;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+/**
+ * Game controller test
+ */
 public class GameControllerTest {
 
     private GameController controller = new GameController(3);
@@ -53,23 +56,23 @@ public class GameControllerTest {
     }
 
     @Test
-    public void oWin() {
+    public void xWin() {
         controller.makeTurn(0, 0);
         controller.makeTurn(1, 1);
         controller.makeTurn(0, 1);
         controller.makeTurn(1, 2);
         controller.makeTurn(0, 2);
-        assertTrue(controller.check(1));
+        assertTrue(controller.check(true));
     }
 
     @Test
-    public void xWin() {
+    public void oWin() {
         controller.makeTurn(2, 1);
         controller.makeTurn(1, 1);
         controller.makeTurn(1, 2);
         controller.makeTurn(0, 0);
         controller.makeTurn(2, 0);
         controller.makeTurn(2, 2);
-        assertTrue(controller.check(2));
+        assertTrue(controller.check(false));
     }
 }

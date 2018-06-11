@@ -9,9 +9,17 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Game client implementation for JavaFX view
+ */
 public class ViewClient implements GameClient {
     private final View view;
+    private volatile boolean closed = false;
 
+    /**
+     * Constructs new view client
+     * @param view JavaFX view
+     */
     public ViewClient(View view) {
         this.view = view;
     }
@@ -22,11 +30,6 @@ public class ViewClient implements GameClient {
             view.showMessage(message);
             return 1;
         });
-    }
-
-    @Override
-    public boolean isClosed() {
-        return waitWithResult(view::isClosed);
     }
 
     @Override
@@ -55,10 +58,20 @@ public class ViewClient implements GameClient {
         return waitWithResult(consumer -> view.nextTurn(canMakeTurn, consumer));
     }
 
+    public void close() {
+        this.closed = true;
+    }
+
+    @Override
+    public boolean isClosed() {
+        return closed;
+    }
+
     private static <T> T waitWithResult(Supplier<T> supplier) {
         return waitWithResult(consumer -> consumer.accept(supplier.get()));
     }
 
+    // wrapper for waiting a result
     private static <T> T waitWithResult(Consumer<Consumer<T>> consumer) {
         SynchronousQueue<T> queue = new SynchronousQueue<>();
         Platform.runLater(() -> consumer.accept(queue::add));

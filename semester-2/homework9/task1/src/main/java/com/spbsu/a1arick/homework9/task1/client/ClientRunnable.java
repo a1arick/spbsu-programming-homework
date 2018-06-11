@@ -13,6 +13,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.List;
 
+/**
+ * Runnable for handling commands for client
+ */
 public class ClientRunnable implements Runnable {
 
     private final GameClient client;

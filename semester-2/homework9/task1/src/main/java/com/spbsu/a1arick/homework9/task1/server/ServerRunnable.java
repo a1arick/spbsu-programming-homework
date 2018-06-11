@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Runnable for server that matches games by ids
+ */
 public class ServerRunnable implements Runnable {
 
     private final int port;
@@ -39,12 +42,12 @@ public class ServerRunnable implements Runnable {
                     if (firstWrapper != null) {
                         firstWrapper.init(true);
                         clientSocketWrapper.init(false);
-                        executorService.execute(new GameRunnable(firstWrapper, clientSocketWrapper, 3));
+                        createGame(executorService, firstWrapper, clientSocketWrapper);
                     } else {
                         clientMap.put(gameId, clientSocketWrapper);
                     }
                 } catch (Exception e) {
-                    System.out.println("I/O error: " + e);
+                    System.out.println("Exception: " + e);
                 }
             }
         } catch (IOException e) {
@@ -52,5 +55,9 @@ public class ServerRunnable implements Runnable {
         } finally {
             executorService.shutdown();
         }
+    }
+
+    protected void createGame(ExecutorService executorService, ClientSocketWrapper crossWrapper, ClientSocketWrapper zeroWrapper) {
+        executorService.execute(new GameRunnable(crossWrapper, zeroWrapper, 3));
     }
 }

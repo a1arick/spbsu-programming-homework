@@ -1,5 +1,8 @@
 package com.spbsu.a1arick.homework9.task1.server;
 
+/**
+ * Server main
+ */
 public class ServerMain {
     public static void main(String[] args) {
         int port = 1111;

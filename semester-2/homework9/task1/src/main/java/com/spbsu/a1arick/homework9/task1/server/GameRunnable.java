@@ -1,21 +1,26 @@
 package com.spbsu.a1arick.homework9.task1.server;
 
 import com.spbsu.a1arick.homework9.task1.Command;
-import com.spbsu.a1arick.homework9.task1.exceptions.ClientErrorException;
-import com.spbsu.a1arick.homework9.task1.exceptions.UnknownCommandException;
-import com.spbsu.a1arick.homework9.task1.exceptions.WrongCommandFormatException;
 import javafx.util.Pair;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Runnable for handling game process
+ */
 public class GameRunnable implements Runnable {
 
     private final ClientSocketWrapper crossWrapper;
     private final ClientSocketWrapper zeroWrapper;
     private final GameController controller;
 
+    /**
+     * Constructs new game for two players
+     * @param crossWrapper "cross" client
+     * @param zeroWrapper "zero" client
+     * @param n dimension for game controller
+     */
     public GameRunnable(ClientSocketWrapper crossWrapper, ClientSocketWrapper zeroWrapper, int n) {
         this.crossWrapper = crossWrapper;
         this.zeroWrapper = zeroWrapper;
@@ -57,8 +62,8 @@ public class GameRunnable implements Runnable {
         }
     }
 
-    private boolean makeTurn(ClientSocketWrapper currentWrapper, List<ClientSocketWrapper> wrappers)
-            throws WrongCommandFormatException, IOException, ClientErrorException, UnknownCommandException {
+    protected boolean makeTurn(ClientSocketWrapper currentWrapper, List<ClientSocketWrapper> wrappers)
+            throws Exception {
         Pair<Command, List<String>> pair = currentWrapper.applyCommand(Command.CLIENT_NEXT_TURN);
         while (true) {
             Command command = pair.getKey();
