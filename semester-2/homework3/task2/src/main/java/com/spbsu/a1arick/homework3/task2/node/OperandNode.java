@@ -1,12 +1,23 @@
-package com.spbsu.a1arick.homework3.task2;
+package com.spbsu.a1arick.homework3.task2.node;
+
+import com.spbsu.a1arick.homework3.task2.exceptions.WrongInputException;
 
 import java.io.PrintStream;
 import java.util.Scanner;
 
+/**
+ * Integer value node
+ */
 public class OperandNode implements ExpressionTreeNode {
     private int value;
 
-    OperandNode(Scanner scanner) throws WrongInputException {
+    /**
+     * Constructs value node
+     *
+     * @param scanner scanner to read value from
+     * @throws WrongInputException if number format is wrong
+     */
+    public OperandNode(Scanner scanner) throws WrongInputException {
         try {
             String input = scanner.next();
             if (input.charAt(input.length() - 1) == ')') {

@@ -1,12 +1,14 @@
 package com.spbsu.a1arick.homework3.task2;
 
-import static org.junit.Assert.*;
-
+import com.spbsu.a1arick.homework3.task2.exceptions.WrongInputException;
+import com.spbsu.a1arick.homework3.task2.tree.ExpressionTree;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
+
+import static org.junit.Assert.assertEquals;
 
 public class ExpressionTreeTest {
 

@@ -1,15 +1,26 @@
-package com.spbsu.a1arick.homework3.task2;
+package com.spbsu.a1arick.homework3.task2.node;
+
+import com.spbsu.a1arick.homework3.task2.exceptions.WrongInputException;
 
 import java.io.PrintStream;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * Binary operator node
+ */
 public class OperatorNode implements ExpressionTreeNode {
     private char operation;
     private ExpressionTreeNode left;
     private ExpressionTreeNode right;
 
-    OperatorNode(Scanner scanner) throws WrongInputException {
+    /**
+     * Constructs operator node
+     *
+     * @param scanner scanner to read expression from
+     * @throws WrongInputException if operator format is wrong
+     */
+    public OperatorNode(Scanner scanner) throws WrongInputException {
         String input = scanner.next();
         operation = input.charAt(input.length() - 1);
         if (operation != '+' && operation != '-' && operation != '*' && operation != '/') {
@@ -26,7 +37,6 @@ public class OperatorNode implements ExpressionTreeNode {
         } else {
             right = new OperatorNode(scanner);
         }
-
     }
 
     @Override
