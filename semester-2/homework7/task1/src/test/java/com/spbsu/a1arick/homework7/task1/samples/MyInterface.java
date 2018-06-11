@@ -3,7 +3,7 @@ package com.spbsu.a1arick.homework7.task1.samples;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface MyInterface extends Predicate<Boolean>, Comparable<Number>{
+public interface MyInterface extends Predicate<Boolean>, Comparable<Number> {
 
     int a = 3;
 

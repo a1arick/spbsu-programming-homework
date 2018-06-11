@@ -9,8 +9,11 @@ public class Complex {
 
     public int a;
 
-    @SampleAnnotation private String name;
-    void f(){}
+    @SampleAnnotation
+    private String name;
+
+    void f() {
+    }
 
     enum SomeEnum implements Comparable<SomeEnum> {
         A, B, C;

@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.METHOD})
 public @interface SampleAnnotation {
     String value() default "aaa";
+
     String v1() default "aaa";
 }

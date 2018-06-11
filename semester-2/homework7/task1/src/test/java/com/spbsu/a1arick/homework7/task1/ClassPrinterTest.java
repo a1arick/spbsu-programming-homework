@@ -103,7 +103,7 @@ public class ClassPrinterTest {
     }
 
     @Test
-    public void testInterface(){
+    public void testInterface() {
         String expected = "package com.spbsu.a1arick.homework7.task1.samples;\n" +
                 "\n" +
                 "public abstract interface MyInterface extends java.util.function.Predicate<java.lang.Boolean>, java.lang.Comparable<java.lang.Number> {\n" +

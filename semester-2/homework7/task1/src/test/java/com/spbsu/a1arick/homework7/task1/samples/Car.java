@@ -58,29 +58,38 @@ public abstract class Car<T, P, R, S, F>
     Supplier<Comparable<Number>>[] v;
     transient volatile char[] c;
 
-    public Map<F, P> getName() throws IllegalArgumentException, IllegalStateException  {
+    public Map<F, P> getName() throws IllegalArgumentException, IllegalStateException {
         return null;
     }
 
     @SafeVarargs
-    public final synchronized  <Y> void setName(@SampleAnnotation String name, Consumer<Map<String, P>> consumer,  Integer... args) {
+    public final synchronized <Y> void setName(@SampleAnnotation String name, Consumer<Map<String, P>> consumer, Integer... args) {
         this.name = name;
     }
 
     protected abstract <F, P> Long getName1();
 
-    private static class Road{
-        @SampleAnnotation private String name;
-        void f(){}
+    private static class Road {
+        @SampleAnnotation
+        private String name;
 
-        public class Road1{
-            @SampleAnnotation private String name;
-            void f(){}
+        void f() {
+        }
+
+        public class Road1 {
+            @SampleAnnotation
+            private String name;
+
+            void f() {
+            }
         }
     }
 
-    public class Road2{
-        @SampleAnnotation private String name;
-        void f(){}
+    public class Road2 {
+        @SampleAnnotation
+        private String name;
+
+        void f() {
+        }
     }
 }

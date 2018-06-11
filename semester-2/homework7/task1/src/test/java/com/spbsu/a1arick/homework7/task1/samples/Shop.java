@@ -5,7 +5,7 @@ public enum Shop {
 
     private final int field = 3;
 
-    private void f(){
+    private void f() {
 
     }
 
@@ -13,8 +13,11 @@ public enum Shop {
         return null;
     }
 
-    public class Road3{
-        @SampleAnnotation private String name;
-        void f(){}
+    public class Road3 {
+        @SampleAnnotation
+        private String name;
+
+        void f() {
+        }
     }
 }

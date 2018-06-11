@@ -14,6 +14,7 @@ public class ClassPrinter {
 
     /**
      * Prints class structure
+     *
      * @param clazz to print
      * @return class structure
      */
@@ -33,27 +34,27 @@ public class ClassPrinter {
         addClassName(tabs, builder, clazz);
         builder.append(" {\n\n");
         addFields(tabs + "\t", builder, clazz);
-        addConstructors(tabs + "\t" , builder, clazz);
-        addMethods(tabs + "\t" , builder, clazz);
+        addConstructors(tabs + "\t", builder, clazz);
+        addMethods(tabs + "\t", builder, clazz);
         Arrays.stream(clazz.getDeclaredClasses()).forEach(nestedClass -> addClass(tabs + "\t", builder, nestedClass));
         builder.append(tabs).append("}\n\n");
     }
 
-    private static void addAnnotations(String tabs, StringBuilder builder, Annotation[] annotations){
+    private static void addAnnotations(String tabs, StringBuilder builder, Annotation[] annotations) {
         Arrays.stream(annotations).forEach(annotation -> builder.append(tabs).append(annotation).append('\n'));
     }
 
-    private static String getAnnotations(Annotation[] annotations){
+    private static String getAnnotations(Annotation[] annotations) {
         return Arrays.stream(annotations).map(Object::toString).collect(Collectors.joining(" "));
     }
 
-    private static void addClassName(String tabs, StringBuilder builder, Class clazz){
+    private static void addClassName(String tabs, StringBuilder builder, Class clazz) {
         String typeParameters = getTypeParameters(clazz.getTypeParameters());
         builder.append(tabs)
                 .append(getModifiers(clazz))
                 .append(clazz.getSimpleName())
                 .append(typeParameters);
-        if(clazz.getSuperclass() != null && !clazz.getSuperclass().equals(Object.class) && !clazz.getSuperclass().equals(Enum.class)){
+        if (clazz.getSuperclass() != null && !clazz.getSuperclass().equals(Object.class) && !clazz.getSuperclass().equals(Enum.class)) {
             builder.append("extends ")
                     .append(clazz.getGenericSuperclass())
                     .append(' ');
@@ -69,13 +70,13 @@ public class ClassPrinter {
         }
     }
 
-    private static void addFields(String tabs, StringBuilder builder, Class clazz){
+    private static void addFields(String tabs, StringBuilder builder, Class clazz) {
         if (clazz.isEnum()) {
             //noinspection unchecked
             builder.append(tabs)
                     .append(EnumSet.allOf(clazz).stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(", ", "", ";\n\n")));
+                            .map(Object::toString)
+                            .collect(Collectors.joining(", ", "", ";\n\n")));
         }
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field -> !field.isSynthetic() && !field.isEnumConstant())
@@ -162,7 +163,7 @@ public class ClassPrinter {
     }
 
     private static String getTypeParameters(TypeVariable[] typeParameters) {
-        if(typeParameters.length == 0) {
+        if (typeParameters.length == 0) {
             return "";
         }
         return Arrays.stream(typeParameters).map(Object::toString).collect(Collectors.joining(", ", "<", "> "));
