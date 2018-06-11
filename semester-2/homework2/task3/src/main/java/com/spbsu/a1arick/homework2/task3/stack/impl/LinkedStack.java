@@ -1,10 +1,14 @@
-package com.spbsu.a1arick.homework2.task3;
+package com.spbsu.a1arick.homework2.task3.stack.impl;
 
+import com.spbsu.a1arick.homework2.task3.exception.DataStructureIsEmptyException;
+import com.spbsu.a1arick.homework2.task3.stack.Stack;
+
+/**
+ * Linked list based stack
+ */
 public class LinkedStack implements Stack {
     private int size = 0;
-
     private Node head = null;
-
 
     @Override
     public void push(int x) {
@@ -14,9 +18,9 @@ public class LinkedStack implements Stack {
 
     @Override
     public int pop() throws DataStructureIsEmptyException {
-        if (isEmpty())
+        if (isEmpty()) {
             throw new DataStructureIsEmptyException("Queue is empty");
-        else {
+        } else {
             int x = head.value;
             head = head.next;
             size--;
@@ -29,7 +33,7 @@ public class LinkedStack implements Stack {
         return size == 0;
     }
 
-    private class Node {
+    private static class Node {
         private int value;
         private Node next;
 

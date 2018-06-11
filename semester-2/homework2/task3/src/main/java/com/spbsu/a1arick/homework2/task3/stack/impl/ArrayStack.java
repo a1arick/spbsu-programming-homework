@@ -1,5 +1,11 @@
-package com.spbsu.a1arick.homework2.task3;
+package com.spbsu.a1arick.homework2.task3.stack.impl;
 
+import com.spbsu.a1arick.homework2.task3.exception.DataStructureIsEmptyException;
+import com.spbsu.a1arick.homework2.task3.stack.Stack;
+
+/**
+ * Array based stack
+ */
 public class ArrayStack implements Stack {
 
     private int length = 10;
@@ -20,12 +26,12 @@ public class ArrayStack implements Stack {
 
     @Override
     public int pop() throws DataStructureIsEmptyException {
-        if (head > -1) {
+        if (isEmpty()) {
+            throw new DataStructureIsEmptyException("Array stack is empty");
+        } else {
             int temp = array[head];
             head--;
             return temp;
-        } else {
-            throw new DataStructureIsEmptyException("Array stack is empty");
         }
     }
 

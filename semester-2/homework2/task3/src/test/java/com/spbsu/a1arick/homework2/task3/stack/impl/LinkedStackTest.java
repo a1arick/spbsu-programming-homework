@@ -1,10 +1,10 @@
-package com.spbsu.a1arick.homework2.task3;
+package com.spbsu.a1arick.homework2.task3.stack.impl;
 
+import com.spbsu.a1arick.homework2.task3.exception.DataStructureIsEmptyException;
+import com.spbsu.a1arick.homework2.task3.stack.Stack;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LinkedStackTest {
     @Test

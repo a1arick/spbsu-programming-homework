@@ -1,7 +1,20 @@
-package com.spbsu.a1arick.homework2.task3;
+package com.spbsu.a1arick.homework2.task3.calculator;
 
+import com.spbsu.a1arick.homework2.task3.exception.DataStructureIsEmptyException;
+import com.spbsu.a1arick.homework2.task3.stack.Stack;
+
+/**
+ * Calculator class
+ */
 public class Calculator {
-    public int solve(String s, Stack stack) throws DataStructureIsEmptyException {
+    /**
+     * Computes expression result
+     *
+     * @param s     string with expression
+     * @param stack stack to use
+     * @return result of computation
+     */
+    public static int solve(String s, Stack stack) {
         String[] strs = s.split(" ");
         Node[] nodes = new Node[strs.length];
         for (int i = 0; i < nodes.length; i++) {
@@ -12,11 +25,15 @@ public class Calculator {
                 nodes[i] = new Node(Integer.valueOf(str));
             }
         }
-        return solve(nodes, stack);
+        try {
+            return solve(nodes, stack);
+        } catch (DataStructureIsEmptyException e) {
+            throw new IllegalStateException("Something is wrong", e);
+        }
     }
 
 
-    private int solve(Node[] nodes, Stack stack) throws DataStructureIsEmptyException {
+    private static int solve(Node[] nodes, Stack stack) throws DataStructureIsEmptyException {
         for (int i = 0; i < nodes.length; i++) {
             Node node = nodes[i];
             if (node.isOperation()) {
