@@ -14,6 +14,7 @@ public class GameController {
 
     /**
      * Constructs controller
+     *
      * @param n dimension
      */
     public GameController(int n) {
@@ -24,6 +25,7 @@ public class GameController {
 
     /**
      * Makes turn
+     *
      * @param i row
      * @param j column
      * @return {@code true} if can make turn else {@code false}
@@ -39,6 +41,7 @@ public class GameController {
 
     /**
      * Checks if label won
+     *
      * @param isCross label: {@code true} if is cross else {@code false}
      * @return {@code true} if label won else {@code false}
      */
@@ -61,6 +64,7 @@ public class GameController {
 
     /**
      * Checks if turn is possible
+     *
      * @param i row
      * @param j column
      * @return {@code true} if can make turn else {@code false}

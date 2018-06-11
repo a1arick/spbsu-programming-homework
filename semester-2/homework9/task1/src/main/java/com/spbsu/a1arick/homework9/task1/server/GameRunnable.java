@@ -17,9 +17,10 @@ public class GameRunnable implements Runnable {
 
     /**
      * Constructs new game for two players
+     *
      * @param crossWrapper "cross" client
-     * @param zeroWrapper "zero" client
-     * @param n dimension for game controller
+     * @param zeroWrapper  "zero" client
+     * @param n            dimension for game controller
      */
     public GameRunnable(ClientSocketWrapper crossWrapper, ClientSocketWrapper zeroWrapper, int n) {
         this.crossWrapper = crossWrapper;

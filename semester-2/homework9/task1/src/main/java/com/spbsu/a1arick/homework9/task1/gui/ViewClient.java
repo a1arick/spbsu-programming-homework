@@ -18,6 +18,7 @@ public class ViewClient implements GameClient {
 
     /**
      * Constructs new view client
+     *
      * @param view JavaFX view
      */
     public ViewClient(View view) {

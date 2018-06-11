@@ -26,7 +26,8 @@ public enum Command {
 
     /**
      * Checks number of arguments
-     * @param args arguments
+     *
+     * @param args   arguments
      * @param length expected number of arguments
      * @throws WrongCommandFormatException if number of arguments is wrong
      */
@@ -38,7 +39,8 @@ public enum Command {
 
     /**
      * Checks command and argument length
-     * @param pair command and arguments
+     *
+     * @param pair   command and arguments
      * @param length expected number of arguments
      * @throws WrongCommandFormatException if command is wrong or number of arguments is wrong
      */
@@ -50,6 +52,7 @@ public enum Command {
 
     /**
      * Serializes command and arguments
+     *
      * @param args arguments
      * @return serialized command and its arguments
      */
@@ -60,6 +63,7 @@ public enum Command {
 
     /**
      * Parses command and arguments
+     *
      * @param s string to parse
      * @return command and arguments
      * @throws WrongCommandFormatException if format is wrong

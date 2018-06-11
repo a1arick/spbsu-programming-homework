@@ -15,6 +15,7 @@ public class WrongCommandFormatException extends Exception {
 
     /**
      * Constructs new exception with wrong command
+     *
      * @param command wrong command
      */
     public WrongCommandFormatException(Command command) {

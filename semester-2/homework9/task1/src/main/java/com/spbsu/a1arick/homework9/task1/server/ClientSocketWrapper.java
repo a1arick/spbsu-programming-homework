@@ -26,6 +26,7 @@ public class ClientSocketWrapper implements AutoCloseable {
 
     /**
      * Constructs wrapper for client socket
+     *
      * @param socket to wrap
      * @throws IOException if can't get socket input/output streams
      */
@@ -37,6 +38,7 @@ public class ClientSocketWrapper implements AutoCloseable {
 
     /**
      * Initializes client with "cross" or "zero" label
+     *
      * @param isCross {@code true} if is "cross" else {@code false}
      */
     public void init(boolean isCross) {
@@ -61,8 +63,9 @@ public class ClientSocketWrapper implements AutoCloseable {
 
     /**
      * Sends command to client and expects "OK"
+     *
      * @param command command to send
-     * @param args command arguments
+     * @param args    command arguments
      * @throws Exception in case of command format, client or connection error
      */
     public void sendCommand(Command command, Object... args) throws Exception {
@@ -75,8 +78,9 @@ public class ClientSocketWrapper implements AutoCloseable {
 
     /**
      * Sends command to client and returns result command
+     *
      * @param command command to send
-     * @param args command arguments
+     * @param args    command arguments
      * @return received command with arguments
      * @throws Exception in case of command format, client or connection error
      */
