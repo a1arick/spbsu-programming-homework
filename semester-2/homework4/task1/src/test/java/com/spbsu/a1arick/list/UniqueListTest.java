@@ -1,9 +1,12 @@
-package com.spbsu.a1arick;
+package com.spbsu.a1arick.list;
 
+import com.spbsu.a1arick.exception.ElementAlreadyExistsException;
+import com.spbsu.a1arick.exception.ElementNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class UniqueListTest {
 

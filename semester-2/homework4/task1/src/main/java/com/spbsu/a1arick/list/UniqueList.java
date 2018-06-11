@@ -1,5 +1,8 @@
-package com.spbsu.a1arick;
+package com.spbsu.a1arick.list;
 
+
+import com.spbsu.a1arick.exception.ElementAlreadyExistsException;
+import com.spbsu.a1arick.exception.ElementNotFoundException;
 
 /**
  * List that stores only unique values
@@ -15,8 +18,9 @@ public class UniqueList<T> extends MyList<T> {
      */
     @Override
     public void add(T value) throws ElementAlreadyExistsException {
-        if (contains(value))
+        if (contains(value)) {
             throw new ElementAlreadyExistsException(value);
+        }
         super.add(value);
     }
 
@@ -28,8 +32,9 @@ public class UniqueList<T> extends MyList<T> {
      */
     @Override
     public void remove(T value) throws ElementNotFoundException {
-        if (!contains(value))
+        if (!contains(value)) {
             throw new ElementNotFoundException(value);
+        }
         super.remove(value);
     }
 }

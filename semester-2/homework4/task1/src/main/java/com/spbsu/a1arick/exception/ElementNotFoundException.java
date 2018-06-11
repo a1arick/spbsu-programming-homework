@@ -1,4 +1,4 @@
-package com.spbsu.a1arick;
+package com.spbsu.a1arick.exception;
 
 public class ElementNotFoundException extends Exception {
     public ElementNotFoundException(Object element) {

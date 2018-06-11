@@ -1,4 +1,7 @@
-package com.spbsu.a1arick;
+package com.spbsu.a1arick.list;
+
+import com.spbsu.a1arick.exception.ElementAlreadyExistsException;
+import com.spbsu.a1arick.exception.ElementNotFoundException;
 
 /**
  * List that stores only unique values
